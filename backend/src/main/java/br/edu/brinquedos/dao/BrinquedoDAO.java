@@ -15,7 +15,6 @@ public class BrinquedoDAO {
 	private Connection conn;
 	private PreparedStatement ps;
 	private ResultSet rs;
-	private Brinquedo brinquedo;
 
 	public BrinquedoDAO() {
 		try {
