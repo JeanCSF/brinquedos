@@ -1,81 +1,84 @@
-package br.edu.brinquedos.model;
+package br.edu.toys.model;
 
-public class Brinquedo {
+public class Toy {
 
-	private int codigo;
-	private String descricao;
-	private String categoria;
-	private String marca;
-	private String imagem;
-	private float preco;
-	private String detalhes;
+	private int toyId;
+	private String description;
+	private String category;
+	private String brand;
+	private String image;
+	private float price;
+	private String details;
 
-	public Brinquedo(int codigo, String descricao, String categoria, String marca, String imagem, float preco, String detalhes) {
-		this.codigo = codigo;
-		this.descricao = descricao;
-		this.categoria = categoria;
-		this.marca = marca;
-		this.imagem = imagem;
-		this.preco = preco;
-		this.detalhes = detalhes;
+	public Toy(int toyId, String description, String category, String brand, String image, float price, String details) {
+		super();
+		this.toyId = toyId;
+		this.description = description;
+		this.category = category;
+		this.brand = brand;
+		this.image = image;
+		this.price = price;
+		this.details = details;
 	}
 
-	public Brinquedo() {
+	public int getToyId() {
+		return toyId;
 	}
 
-	public int getCodigo() {
-		return codigo;
+	public void setToyId(int toyId) {
+		this.toyId = toyId;
 	}
 
-	public void setCodigo(int codigo) {
-		this.codigo = codigo;
+	public String getDescription() {
+		return description;
 	}
 
-	public String getDescricao() {
-		return descricao;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
+	public String getCategory() {
+		return category;
 	}
 
-	public String getCategoria() {
-		return categoria;
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
-	public void setCategoria(String categoria) {
-		this.categoria = categoria;
+	public String getBrand() {
+		return brand;
 	}
 
-	public String getMarca() {
-		return marca;
+	public void setBrand(String brand) {
+		this.brand = brand;
 	}
 
-	public void setMarca(String marca) {
-		this.marca = marca;
+	public String getImage() {
+		return image;
 	}
 
-	public String getImagem() {
-		return imagem;
+	public void setImage(String image) {
+		this.image = image;
 	}
 
-	public void setImagem(String imagem) {
-		this.imagem = imagem;
+	public float getPrice() {
+		return price;
 	}
 
-	public float getPreco() {
-		return preco;
+	public void setPrice(float price) {
+		this.price = price;
 	}
 
-	public void setPreco(float preco) {
-		this.preco = preco;
+	public String getDetails() {
+		return details;
 	}
 
-	public String getDetalhes() {
-		return detalhes;
+	public void setDetails(String details) {
+		this.details = details;
 	}
 
-	public void setDetalhes(String detalhes) {
-		this.detalhes = detalhes;
+	public Toy() {
 	}
+
+
 }

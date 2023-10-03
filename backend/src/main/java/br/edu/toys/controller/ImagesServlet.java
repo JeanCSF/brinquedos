@@ -1,4 +1,4 @@
-package br.edu.brinquedos.controller;
+package br.edu.toys.controller;
 
 import java.io.File;
 import jakarta.ws.rs.GET;
@@ -8,19 +8,19 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.ResponseBuilder;
 
-@Path("/imagens")
+@Path("/images")
 public class ImagesServlet {
     
-	private static final String PASTA_IMAGENS = "imagens/";
+	private static final String IMAGES_FOLDER = "images/";
 
     @GET
-    @Path("/{nomeImagem}")
+    @Path("/{imgName}")
     @Produces("image/*")
-    public Response obterImagem(@PathParam("nomeImagem") String nomeImagem) {
-        File arquivoImagem = new File(PASTA_IMAGENS + nomeImagem);
+    public Response getImage(@PathParam("imgName") String imgName) {
+        File imgFile = new File(IMAGES_FOLDER + imgName);
 
-        if (arquivoImagem.exists()) {
-            ResponseBuilder response = Response.ok((Object) arquivoImagem);
+        if (imgFile.exists()) {
+            ResponseBuilder response = Response.ok((Object) imgFile);
             return response.build();
         } else {
             return Response.status(404).build();

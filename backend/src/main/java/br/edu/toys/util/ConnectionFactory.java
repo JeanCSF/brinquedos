@@ -1,4 +1,4 @@
-package br.edu.brinquedos.util;
+package br.edu.toys.util;
 
 import java.sql.*;
 

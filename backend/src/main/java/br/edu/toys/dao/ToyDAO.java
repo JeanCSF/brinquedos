@@ -1,4 +1,4 @@
-package br.edu.brinquedos.dao;
+package br.edu.toys.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,17 +7,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.edu.brinquedos.model.Brinquedo;
-import br.edu.brinquedos.util.ConnectionFactory;
+import br.edu.toys.model.Toy;
+import br.edu.toys.util.ConnectionFactory;
 
-public class BrinquedoDAO {
+public class ToyDAO {
 
 	private Connection conn;
 	private PreparedStatement ps;
 	private ResultSet rs;
-	private Brinquedo brinquedo;
-
-	public BrinquedoDAO() {
+	
+	public ToyDAO() {
 		try {
 			this.conn = ConnectionFactory.getConnection();
 		} catch (Exception e) {
@@ -26,43 +25,45 @@ public class BrinquedoDAO {
 		}
 	}
 
-	public boolean verificarCodigo(int codigo) throws Exception {
-		boolean codigoExiste = false;
+	public boolean checkId(int toy_id) throws Exception {
+		boolean toyIdExists = false;
 		try {
-			String SQL = "SELECT COUNT(*) FROM brinquedos WHERE codigo = ?";
+			String SQL = "SELECT COUNT(*) FROM tb_toys WHERE toy_id = ?";
 			ps = conn.prepareStatement(SQL);
-			ps.setInt(1, codigo);
+			ps.setInt(1, toy_id);
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				int rowCount = rs.getInt(1);
-				codigoExiste = rowCount > 0;
+				toyIdExists = rowCount > 0;
 			}
 		} catch (SQLException sqle) {
 			throw new Exception("Erro ao verificar se o Código já existe: " + sqle);
 		} finally {
 			ConnectionFactory.closeConnection(null, ps, rs);
 		}
-		return codigoExiste;
+		return toyIdExists;
 	}
 
-	public void salvar(Brinquedo brinquedo) throws Exception {
-		if (brinquedo == null)
+	public void save(Toy toy) throws Exception {
+		if (toy == null)
 			throw new Exception("O valor passado nao pode ser nulo");
-		int codigo = brinquedo.getCodigo();
+		int toyId = toy.getToyId();
 
-		if (verificarCodigo(codigo)) {
+		if (checkId(toyId)) {
 			throw new Exception("Este código já está cadastrado!");
 		}
 		try {
-			String SQL = "INSERT INTO brinquedos (codigo, descricao, categoria, marca, imagem, preco, detalhes) values (?, ?, ?, ?, ?, ?, ?)";
+			String SQL = "INSERT INTO tb_toys (toy_id, description, category, brand, image, price, details) values (?, ?, ?, ?, ?, ?, ?)";
 			ps = conn.prepareStatement(SQL);
-			ps.setInt(1, brinquedo.getCodigo());
-			ps.setString(2, brinquedo.getDescricao());
-			ps.setString(3, brinquedo.getCategoria());
-			ps.setString(4, brinquedo.getMarca());
-			ps.setString(5, brinquedo.getImagem());
-			ps.setFloat(6, brinquedo.getPreco());
-			ps.setString(7, brinquedo.getDetalhes());
+			
+			ps.setInt(1, toy.getToyId());
+			ps.setString(2, toy.getDescription());
+			ps.setString(3, toy.getCategory());
+			ps.setString(4, toy.getBrand());
+			ps.setString(5, toy.getImage());
+			ps.setFloat(6, toy.getPrice());
+			ps.setString(7, toy.getDetails());
+			
 			ps.executeUpdate();
 		} catch (SQLException sqle) {
 			throw new Exception("Erro ao inserir dados " + sqle);
@@ -71,19 +72,19 @@ public class BrinquedoDAO {
 		}
 	}
 
-	public void atualizar(Brinquedo brinquedo) throws Exception {
-		if (brinquedo == null)
+	public void update(Toy toy) throws Exception {
+		if (toy == null)
 			throw new Exception("O valor passado nao pode ser nulo");
 		try {
-			String SQL = "UPDATE brinquedos SET descricao=?, categoria=?, marca=?, imagem=?, preco=?, detalhes=?  WHERE codigo=?";
+			String SQL = "UPDATE tb_toys SET description=?, category=?, brand=?, image=?, price=?, details=?  WHERE toy_id=?";
 			ps = conn.prepareStatement(SQL);
-			ps.setString(1, brinquedo.getDescricao());
-			ps.setString(2, brinquedo.getCategoria());
-			ps.setString(3, brinquedo.getMarca());
-			ps.setString(4, brinquedo.getImagem());
-			ps.setFloat(5, brinquedo.getPreco());
-			ps.setString(6, brinquedo.getDetalhes());
-			ps.setInt(7, brinquedo.getCodigo());
+			ps.setString(1, toy.getDescription());
+			ps.setString(2, toy.getCategory());
+			ps.setString(3, toy.getBrand());
+			ps.setString(4, toy.getImage());
+			ps.setFloat(5, toy.getPrice());
+			ps.setString(6, toy.getDetails());
+			ps.setInt(7, toy.getToyId());
 			ps.executeUpdate();
 		} catch (SQLException sqle) {
 			throw new Exception("Erro ao alterar dados " + sqle);
@@ -92,21 +93,21 @@ public class BrinquedoDAO {
 		}
 	}
 
-	public List<Brinquedo> todosBrinquedos() throws Exception {
+	public List<Toy> allToys() throws Exception {
 		try {
-			ps = conn.prepareStatement("SELECT * FROM brinquedos");
+			ps = conn.prepareStatement("SELECT * FROM tb_toys");
 			rs = ps.executeQuery();
-			List<Brinquedo> list = new ArrayList<Brinquedo>();
+			List<Toy> list = new ArrayList<Toy>();
 
 			while (rs.next()) {
-				int codigo = rs.getInt("codigo");
-				String descricao = rs.getString("descricao");
-				String categoria = rs.getString("categoria");
-				String marca = rs.getString("marca");
-				String imagem = rs.getString("imagem");
-				float preco = rs.getFloat("preco");
-				String detalhes = rs.getString("detalhes");
-				list.add(new Brinquedo(codigo, descricao, categoria, marca, imagem, preco, detalhes));
+				int toy_id = rs.getInt("toy_id");
+				String description = rs.getString("description");
+				String category = rs.getString("category");
+				String brand = rs.getString("brand");
+				String image = rs.getString("image");
+				float price = rs.getFloat("price");
+				String details = rs.getString("details");
+				list.add(new Toy(toy_id, description, category, brand, image, price, details));
 			}
 			return list;
 		} catch (SQLException sqle) {
@@ -115,30 +116,43 @@ public class BrinquedoDAO {
 			ConnectionFactory.closeConnection(conn, ps, rs);
 		}
 	}
-	
-	public Brinquedo find(int codigoBrinquedo) throws Exception {
 
-		try {
-			String SQL = "SELECT * FROM brinquedos WHERE codigo=?";
-			ps = conn.prepareStatement(SQL);
-			ps.setInt(1, codigoBrinquedo);
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				int codigo = rs.getInt("codigo");
-				String descricao = rs.getString("descricao");
-				String categoria = rs.getString("categoria");
-				String marca = rs.getString("marca");
-				String imagem = rs.getString("imagem");
-				float preco = rs.getFloat("preco");
-				String detalhes = rs.getString("detalhes");
+	public Toy find(int toyId) throws Exception {
+		try (Connection conn = ConnectionFactory.getConnection();
+				PreparedStatement ps = conn.prepareStatement("SELECT * FROM tb_toys WHERE toy_id=?")) {
 
-				brinquedo = new Brinquedo(codigo, descricao, categoria, marca, imagem, preco, detalhes);
+			ps.setInt(1, toyId);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					int toy_id = rs.getInt("toy_id");
+					String description = rs.getString("description");
+					String category = rs.getString("category");
+					String brand = rs.getString("brand");
+					String image = rs.getString("image");
+					float price = rs.getFloat("price");
+					String details = rs.getString("details");
+
+					return new Toy(toy_id, description, category, brand, image, price, details);
+				}
 			}
-			return brinquedo;
 		} catch (SQLException sqle) {
 			throw new Exception(sqle);
+		}
+		return null;
+	}
+	
+	public void delete(int toyId) throws Exception {
+		if (toyId == 0)
+			throw new Exception("O valor passado nao pode ser 0");
+		try {
+			String SQL = "DELETE FROM tb_toys WHERE toy_id = ?";
+			ps = conn.prepareStatement(SQL);
+			ps.setInt(1, toyId);
+			ps.executeUpdate();
+		} catch (SQLException sqle) {
+			throw new Exception("Erro ao excluir dados " + sqle);
 		} finally {
-			ConnectionFactory.closeConnection(conn, ps, rs);
+			ConnectionFactory.closeConnection(conn, ps);
 		}
 	}
 

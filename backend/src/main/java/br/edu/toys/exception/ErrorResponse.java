@@ -1,4 +1,4 @@
-package br.edu.brinquedos.exception;
+package br.edu.toys.exception;
 
 public class ErrorResponse {
 	private int status;

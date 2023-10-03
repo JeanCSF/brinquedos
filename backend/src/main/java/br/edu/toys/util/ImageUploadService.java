@@ -1,4 +1,4 @@
-package br.edu.brinquedos.util;
+package br.edu.toys.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,25 +11,29 @@ import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 public class ImageUploadService {
-	
-	public String uploadImage(InputStream imageInputStream, String originalFileName, String diretorioUpload) throws IOException {
-		String nomeUnico = UUID.randomUUID().toString() + getFileExtension(originalFileName);
-		
-		String caminhoCompleto = diretorioUpload + nomeUnico;
-		System.out.println(caminhoCompleto);
+
+	public String uploadImage(InputStream imageInputStream, String originalFileName, String uploadFolder)
+			throws IOException {
+		String randomFileName = UUID.randomUUID().toString() + getFileExtension(originalFileName);
+
+		String fullPath = uploadFolder + randomFileName;
 
 		try (InputStream inputStream = imageInputStream) {
-			Files.copy(inputStream, Path.of(caminhoCompleto), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(inputStream, Path.of(fullPath), StandardCopyOption.REPLACE_EXISTING);
 		}
 
-		return nomeUnico;
+		return randomFileName;
 	}
 
 	private String getFileExtension(String fileName) {
+		if (fileName == null || fileName.isEmpty()) {
+			return "";
+		}
 		int lastDotIndex = fileName.lastIndexOf(".");
-		if (lastDotIndex != -1 && lastDotIndex < fileName.length() - 1) {
+		if (lastDotIndex > 0 && lastDotIndex < fileName.length() - 1) {
 			return fileName.substring(lastDotIndex);
 		}
 		return "";
 	}
+
 }
