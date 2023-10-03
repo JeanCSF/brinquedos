@@ -15,6 +15,7 @@ public class BrinquedoDAO {
 	private Connection conn;
 	private PreparedStatement ps;
 	private ResultSet rs;
+	private Brinquedo brinquedo;
 
 	public BrinquedoDAO() {
 		try {
@@ -108,6 +109,32 @@ public class BrinquedoDAO {
 				list.add(new Brinquedo(codigo, descricao, categoria, marca, imagem, preco, detalhes));
 			}
 			return list;
+		} catch (SQLException sqle) {
+			throw new Exception(sqle);
+		} finally {
+			ConnectionFactory.closeConnection(conn, ps, rs);
+		}
+	}
+	
+	public Brinquedo find(int codigoBrinquedo) throws Exception {
+
+		try {
+			String SQL = "SELECT * FROM brinquedos WHERE codigo=?";
+			ps = conn.prepareStatement(SQL);
+			ps.setInt(1, codigoBrinquedo);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				int codigo = rs.getInt("codigo");
+				String descricao = rs.getString("descricao");
+				String categoria = rs.getString("categoria");
+				String marca = rs.getString("marca");
+				String imagem = rs.getString("imagem");
+				float preco = rs.getFloat("preco");
+				String detalhes = rs.getString("detalhes");
+
+				brinquedo = new Brinquedo(codigo, descricao, categoria, marca, imagem, preco, detalhes);
+			}
+			return brinquedo;
 		} catch (SQLException sqle) {
 			throw new Exception(sqle);
 		} finally {

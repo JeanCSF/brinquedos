@@ -1,14 +1,18 @@
 package br.edu.brinquedos.controller;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
+
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 
 import br.edu.brinquedos.dao.BrinquedoDAO;
 import br.edu.brinquedos.exception.ErrorResponse;
 import br.edu.brinquedos.model.Brinquedo;
-
-import jakarta.servlet.http.HttpServletRequest;
+import br.edu.brinquedos.util.ImageUploadService;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletContext;
 import jakarta.websocket.server.PathParam;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -17,64 +21,83 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
 
 @Path("/api")
 public class ToysResources {
+	@Context
+    private ServletContext servletContext;
+	
+	@Inject
+	private ImageUploadService imageUploadService;
+	
 	private BrinquedoDAO dao = new BrinquedoDAO();
-
+	private Brinquedo brinquedo = new Brinquedo();
+	
 	@POST
 	@Path("/novo")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response criarBrinquedo(HttpServletRequest request) {
+	public Response criarBrinquedo(
+			@Multipart("codigo") int codigo, 
+			@Multipart("descricao") String descricao,
+			@Multipart("categoria") String categoria, 
+			@Multipart("detalhes") String detalhes,
+			@Multipart("marca") String marca, 
+			@Multipart("preco") float preco, 
+			@Multipart("imagem") Attachment imagem) {
+		
 		try {
-			Brinquedo brinquedo = new Brinquedo();
-			brinquedo.setCodigo(Integer.parseInt(request.getParameter("codigo")));
+			
+			String diretorioUpload = servletContext.getRealPath("/") + "imagens\\";
+
+			brinquedo.setCodigo(codigo);
 			boolean codigoExiste = dao.verificarCodigo(brinquedo.getCodigo());
 			if (codigoExiste) {
 				throw new WebApplicationException("Este código já está cadastrado!", Response.Status.BAD_REQUEST);
 			}
-			String servletUrl = "http://localhost:8080/brinquedos/upload/novo";
-			URL url = new URL(servletUrl);
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestMethod("POST");
-			connection.setDoOutput(true);
-			brinquedo.setDescricao(request.getParameter("descricao"));
-			brinquedo.setCategoria(request.getParameter("categoria"));
-			brinquedo.setDetalhes(request.getParameter("detalhes"));
-			brinquedo.setMarca(request.getParameter("marca"));
-			brinquedo.setPreco(Float.parseFloat(request.getParameter("preco")));
-			brinquedo.setImagem(request.getParameter("imagem"));
+			
+			String nomeArquivo = imagem.getContentDisposition().getParameter("filename");
+			InputStream conteudoArquivo = imagem.getDataHandler().getInputStream();
+			String caminhoImagem = imageUploadService.uploadImage(conteudoArquivo, nomeArquivo, diretorioUpload);
+
+			brinquedo.setImagem(caminhoImagem);
+			brinquedo.setDescricao(descricao);
+			brinquedo.setCategoria(categoria);
+			brinquedo.setDetalhes(detalhes);
+			brinquedo.setMarca(marca);
+			brinquedo.setPreco(preco);
+
+			dao.salvar(brinquedo);
 
 			return Response.status(Response.Status.CREATED).entity(brinquedo).build();
 		} catch (Exception e) {
-
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity("Erro ao criar o brinquedo: " + e.getMessage()).build();
 		}
 	}
 
-	@PUT
-	@Path("/brinquedo/{codigo}")
-	@Consumes(MediaType.APPLICATION_JSON)
+
+	@GET
+	@Path("{codigo}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response atualizarBrinquedo(@PathParam("codigo") int codigo, Brinquedo brinquedo) {
+	public Response getUserById(@PathParam("codigo") int codigo){
 		try {
-
-			boolean codigoExiste = dao.verificarCodigo(codigo);
-			if (!codigoExiste) {
-				throw new WebApplicationException("Brinquedo não encontrado.", Response.Status.NOT_FOUND);
-			}
-
-			brinquedo.setCodigo(codigo);
-			dao.atualizar(brinquedo);
-
-			return Response.status(Response.Status.OK).entity(brinquedo).build();
+			brinquedo = dao.find(codigo);
+			return Response.status(Response.Status.CREATED).entity(brinquedo).build();
 		} catch (Exception e) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-					.entity("Erro ao atualizar o brinquedo: " + e.getMessage()).build();
+
+			e.printStackTrace();
+			ErrorResponse errorResponse = new ErrorResponse();
+			errorResponse.setStatus(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+			errorResponse.setMessage("Erro ao buscar brinquedos. Detalhes: " + e.getMessage());
+			errorResponse.setTimestamp(System.currentTimeMillis());
+
+			throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity(errorResponse).type(MediaType.APPLICATION_JSON).build());
 		}
 	}
 
