@@ -61,7 +61,7 @@ public class UsersResources {
 			String uploadFolder = servletContext.getRealPath("/") + "images\\users_imgs\\";
 			String originalFileName = userImg.getContentDisposition().getParameter("filename");
 			InputStream imageInputStream = userImg.getDataHandler().getInputStream();
-			String imgFinalName = imageUploadService.uploadImage(imageInputStream, originalFileName, uploadFolder);
+			String imgFinalName = imageUploadService.uploadImage(imageInputStream, originalFileName, uploadFolder, "");
 
 			String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
 			
@@ -141,7 +141,7 @@ public class UsersResources {
 			String uploadFolder = servletContext.getRealPath("/") + "images\\users_imgs\\";
 			String originalFileName = userImg.getContentDisposition().getParameter("filename");
 			InputStream imageInputStream = userImg.getDataHandler().getInputStream();
-			String imgFinalName = imageUploadService.uploadImage(imageInputStream, originalFileName, uploadFolder);
+			String imgFinalName = imageUploadService.uploadImage(imageInputStream, originalFileName, uploadFolder, "");
 
 			user.setUserImg(uriInfo.getBaseUri().toString() + "images/users_imgs/" + imgFinalName);
 			user.setUserName(userName);

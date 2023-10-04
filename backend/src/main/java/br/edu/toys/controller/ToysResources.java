@@ -62,12 +62,12 @@ public class ToysResources {
 				throw new WebApplicationException("Este código já está cadastrado!", Response.Status.BAD_REQUEST);
 			}
 			
-			String uploadFolder = servletContext.getRealPath("/") + "images\\toys_imgs\\";
+			String uploadFolder = servletContext.getRealPath("/") + "images\\toys_imgs\\toy_" + toy.getToyId() + "\\";
 			String originalFileName = image.getContentDisposition().getParameter("filename");
 			InputStream imageInputStream = image.getDataHandler().getInputStream();
-			String imgFinalName = imageUploadService.uploadImage(imageInputStream, originalFileName, uploadFolder);
+			String imgFinalName = imageUploadService.uploadImage(imageInputStream, originalFileName, uploadFolder, "");
 
-			toy.setImage(uriInfo.getBaseUri().toString() + "images/toys_imgs/" + imgFinalName);
+			toy.setImage(uriInfo.getBaseUri().toString() + "images/toys_imgs/toy_" + toy.getToyId() + "/" + imgFinalName);
 			toy.setDescription(description);
 			toy.setCategory(category);
 			toy.setDetails(details);
@@ -120,16 +120,24 @@ public class ToysResources {
 			@Multipart("image") Attachment image) {
 		try {
 			boolean toyExists = dao.checkId(toyId);
+			Toy toyToEdit = dao.find(toyId);
 			if (!toyExists) {
 				throw new WebApplicationException("Brinquedo não encontrado.", Response.Status.NOT_FOUND);
 			}
 			
-			String uploadFolder = servletContext.getRealPath("/") + "images\\toys_imgs";
+			String uploadFolder = servletContext.getRealPath("/") + "images\\toys_imgs\\toy_" + toyToEdit.getToyId() + "\\";
 			String originalFileName = image.getContentDisposition().getParameter("filename");
 			InputStream imageInputStream = image.getDataHandler().getInputStream();
-			String imgFinalName = imageUploadService.uploadImage(imageInputStream, originalFileName, uploadFolder);
+			
+			
+			String dbImgName = toyToEdit.getImage();
+			String imgEdit = dbImgName.substring(dbImgName.lastIndexOf("/")+1);
+			System.out.println("Aqui------------------------------------------------>" + imgEdit);
+			
+			
+			String imgFinalName = imageUploadService.uploadImage(imageInputStream, originalFileName, uploadFolder, imgEdit);
 
-			toy.setImage(uriInfo.getBaseUri().toString() + "images/toys_imgs/" + imgFinalName);
+			toy.setImage(uriInfo.getBaseUri().toString() + "images/toys_imgs/toy_" + toyToEdit.getToyId() + "/" + imgFinalName);
 			toy.setDescription(description);
 			toy.setCategory(category);
 			toy.setDetails(details);
