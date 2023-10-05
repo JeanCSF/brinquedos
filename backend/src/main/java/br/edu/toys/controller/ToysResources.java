@@ -62,9 +62,9 @@ public class ToysResources {
 				throw new WebApplicationException("Este código já está cadastrado!", Response.Status.BAD_REQUEST);
 			}
 			
-			String uploadFolder = servletContext.getRealPath("/") + "images\\toys_imgs\\toy_" + toy.getToyId() + "\\";
-			String originalFileName = image.getContentDisposition().getParameter("filename");
 			InputStream imageInputStream = image.getDataHandler().getInputStream();
+			String originalFileName = image.getContentDisposition().getParameter("filename");
+			String uploadFolder = servletContext.getRealPath("/") + "images\\toys_imgs\\toy_" + toy.getToyId() + "\\";
 			String imgFinalName = imageUploadService.uploadImage(imageInputStream, originalFileName, uploadFolder, "");
 
 			toy.setImage(uriInfo.getBaseUri().toString() + "images/toys_imgs/toy_" + toy.getToyId() + "/" + imgFinalName);

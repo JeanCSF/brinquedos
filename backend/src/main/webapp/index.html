@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    #toysContainer {
+        display: flex;
+        gap: .3rem;
+    }
+
+    .toy-card {
+        padding: .3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        max-width: 220px;
+        border: 1px solid #212121;
+        border-radius: 5px;
+    }
+
+    .toy-card p {
+        font-weight: 900;
+    }
+
+    .toy-card-img {
+        border: 3px solid #efefef;
+        border-radius: 10px;
+        padding-top: .3rem;
+        margin: 0 auto;
+        max-height: 200px;
+        overflow: hidden;
+    }
+</style>
+
+<body>
+    <h1>Brinquedos:</h1>
+    <main id="toysContainer" style="margin: 0 auto; width: 80%;">
+    </main>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        loadToys();
+    });
+    const createElement = (elementName, attributes) => {
+        const element = document.createElement(elementName);
+        const attributesAsArray = Object.entries(attributes);
+
+        attributesAsArray.forEach(([key, value]) => element.setAttribute(key, value));
+
+        return element;
+    }
+    async function loadToys() {
+        try {
+            const response = await fetch(`http://localhost:8080/toys/api/all`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`Erro na requisição: ${response.statusText}`);
+            }
+            const Toys = await response.json();
+            Toys.forEach(toy => {
+                const toysContainer = document.querySelector("#toysContainer");
+
+                const toyCard = createElement('div', {
+                    class: 'toy-card',
+                    id: `toy_${toy.toyId}`
+                });
+
+                const toyCardImg = createElement('div', {
+                    class: 'toy-card-img',
+                });
+                const toyImg = createElement('img', {
+                    src: `${toy.image}`,
+                    alt: 'Toy Image'
+                });
+                toyCardImg.appendChild(toyImg);
+
+                const toyDesc = document.createElement('p');
+                toyDesc.textContent = toy.description;
+
+                const toyPrice = document.createElement('span');
+                toyPrice.textContent = `R$: ${toy.price}`;
+
+                toyCard.appendChild(toyCardImg);
+                toyCard.appendChild(toyDesc);
+                toyCard.appendChild(toyPrice);
+
+                toysContainer.appendChild(toyCard);
+            });
+
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+        }
+    }
+</script>
+
+</html>
