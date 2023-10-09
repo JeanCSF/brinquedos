@@ -11,6 +11,7 @@
     #toysContainer {
         display: flex;
         gap: .3rem;
+        flex-wrap: wrap;
     }
 
     .toy-card {
@@ -33,16 +34,80 @@
         padding-top: .3rem;
         margin: 0 auto;
         max-height: 200px;
+        max-width: 195px;
+        height: 200px;
+        width: 195px;
         overflow: hidden;
+    }
+
+    .toy-card-img img {
+        max-width: 150px;
+        max-height: 150px;
+    }
+
+    form {
+        margin: 0 auto;
+        width: 30%;
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+    }
+
+    form input {
+        height: 2rem;
     }
 </style>
 
 <body>
+    <form action="">
+        <input type="text" name="user" id="user" placeholder="Usuário">
+        <input type="password" name="password" id="password" placeholder="Senha">
+        <input type="submit" value="Entrar">
+    </form>
     <h1>Brinquedos:</h1>
     <main id="toysContainer" style="margin: 0 auto; width: 80%;">
     </main>
 </body>
 <script>
+    const frmPost = document.querySelector('form');
+    function getFormData(form) {
+        const dadosDoFormulario = {};
+        for (const elemento of form.elements) {
+            if (elemento.name) {
+                dadosDoFormulario[elemento.name] = elemento.value;
+            }
+        }
+        return dadosDoFormulario;
+    };
+    async function login() {
+        const formObj = getFormData(frmPost);
+
+        const paramsObj = {
+            user: user,
+            password: password
+        };
+        try {
+            const response = await fetch(`http://localhost:8080/toys/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formObj),
+            });
+            if (!response.ok) {
+                throw new Error(`Erro na requisição: ${response.statusText}`);
+            } else {
+                alert('Logado')
+            }
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+        }
+    }
+
+    frmPost.addEventListener('submit', function (e) {
+        login();
+        e.preventDefault();
+    });
     document.addEventListener("DOMContentLoaded", () => {
         loadToys();
     });

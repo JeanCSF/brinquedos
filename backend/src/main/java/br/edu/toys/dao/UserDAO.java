@@ -153,6 +153,45 @@ public class UserDAO {
 		return null;
 	}
 	
+	public User getUserByUserName(String userName) throws Exception {
+		try (Connection conn = ConnectionFactory.getConnection();
+				PreparedStatement ps = conn.prepareStatement("SELECT * FROM tb_users WHERE user=?")) {
+
+			ps.setString(1, userName);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					int user_id = rs.getInt("user_id");
+					String user_img = rs.getString("user_img");
+					String user = rs.getString("user");
+					String password = rs.getString("password");
+					String adm = rs.getString("adm");
+
+					return new User(user_id, user_img, user, password, adm);
+				}
+			}
+		} catch (SQLException sqle) {
+			throw new Exception(sqle);
+		}
+		return null;
+	}
+	
+	public String getPassword(String userName) throws Exception {
+		try (Connection conn = ConnectionFactory.getConnection();
+				PreparedStatement ps = conn.prepareStatement("SELECT password FROM tb_users WHERE user=?")) {
+
+			ps.setString(1, userName);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					String password = rs.getString("password");
+					return password;
+				}
+			}
+		} catch (SQLException sqle) {
+			throw new Exception(sqle);
+		}
+		return null;
+	}
+	
 	public void delete(int userId) throws Exception {
 		if (userId == 0)
 			throw new Exception("O valor passado nao pode ser 0");
