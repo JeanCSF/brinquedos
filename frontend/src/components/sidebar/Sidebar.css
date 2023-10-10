@@ -1,7 +1,13 @@
-div {
+.sidebar {
+    top: 0;
+    bottom: 0;
     min-height: 100vh;
 }
 
+.sidebar div {
+    top: 0;
+    bottom: 0;
+}
 
 .translate-x-0 {
     transform: translateX(0);
