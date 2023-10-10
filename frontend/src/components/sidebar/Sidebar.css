@@ -1,0 +1,16 @@
+div {
+    min-height: 100vh;
+}
+
+
+.translate-x-0 {
+    transform: translateX(0);
+}
+
+.-translate-x-full {
+    transform: translateX(-100%);
+}
+
+.ease-in-out {
+    transition: transform 0.3s ease-in-out;
+}
