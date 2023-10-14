@@ -128,12 +128,9 @@ public class ToysResources {
 			String uploadFolder = servletContext.getRealPath("/") + "images\\toys_imgs\\toy_" + toyToEdit.getToyId() + "\\";
 			String originalFileName = image.getContentDisposition().getParameter("filename");
 			InputStream imageInputStream = image.getDataHandler().getInputStream();
-			
-			
+				
 			String dbImgName = toyToEdit.getImage();
 			String imgEdit = dbImgName.substring(dbImgName.lastIndexOf("/")+1);
-			System.out.println("Aqui------------------------------------------------>" + imgEdit);
-			
 			
 			String imgFinalName = imageUploadService.uploadImage(imageInputStream, originalFileName, uploadFolder, imgEdit);
 

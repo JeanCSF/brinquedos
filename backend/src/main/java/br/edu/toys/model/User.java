@@ -7,11 +7,11 @@ public class User {
 	private String password;
 	private String isAdm;
 
-	public User(int userId, String userImg, String user, String password, String isAdm) {
+	public User(int userId, String userImg, String userName, String password, String isAdm) {
 		super();
 		this.userId = userId;
 		this.userImg = userImg;
-		this.userName = user;
+		this.userName = userName;
 		this.password = password;
 		this.isAdm = isAdm;
 	}
@@ -36,8 +36,8 @@ public class User {
 		return userName;
 	}
 
-	public void setUserName(String user) {
-		this.userName = user;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public String getPassword() {

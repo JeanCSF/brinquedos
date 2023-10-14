@@ -58,14 +58,14 @@ public class UsersResources {
 				throw new WebApplicationException("Este usuário já está cadastrado!", Response.Status.BAD_REQUEST);
 			}
 			
-			String uploadFolder = servletContext.getRealPath("/") + "images\\users_imgs\\";
+			String uploadFolder = servletContext.getRealPath("/") + "images\\users_imgs\\" + userName + "\\";
 			String originalFileName = userImg.getContentDisposition().getParameter("filename");
 			InputStream imageInputStream = userImg.getDataHandler().getInputStream();
 			String imgFinalName = imageUploadService.uploadImage(imageInputStream, originalFileName, uploadFolder, "");
 
 			String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
 			
-			user.setUserImg(uriInfo.getBaseUri().toString() + "images/users_imgs/" + imgFinalName);
+			user.setUserImg(uriInfo.getBaseUri().toString() + "images/users_imgs/" + userName + "/" + imgFinalName);
 			user.setUserName(userName);
 			user.setPassword(hashedPassword);
 			user.setIsAdm(adm);
@@ -133,19 +133,26 @@ public class UsersResources {
 			@Multipart("adm") String adm, // OS CAMPOS DO FORMULARIOS DEVEM SER IGUAIS AOS DO @Multipart
 			@Multipart("user_img") Attachment userImg) {
 		try {
+			user = dao.find(userId);
 			boolean userExists = dao.checkUserId(userId);
 			if (!userExists) {
 				throw new WebApplicationException("Usuário não encontrado.", Response.Status.NOT_FOUND);
 			}
 			
-			String uploadFolder = servletContext.getRealPath("/") + "images\\users_imgs\\";
+			String uploadFolder = servletContext.getRealPath("/") + "images\\users_imgs\\" + user.getUserName() + "\\";
 			String originalFileName = userImg.getContentDisposition().getParameter("filename");
 			InputStream imageInputStream = userImg.getDataHandler().getInputStream();
-			String imgFinalName = imageUploadService.uploadImage(imageInputStream, originalFileName, uploadFolder, "");
+			
+			String dbImgName = user.getUserImg();
+			String imgEdit = dbImgName.substring(dbImgName.lastIndexOf("/")+1);
+			
+			String imgFinalName = imageUploadService.uploadImage(imageInputStream, originalFileName, uploadFolder, imgEdit);
 
-			user.setUserImg(uriInfo.getBaseUri().toString() + "images/users_imgs/" + imgFinalName);
+			String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
+			
+			user.setUserImg(uriInfo.getBaseUri().toString() + "images/users_imgs/" + user.getUserName() + "/" + imgFinalName);
 			user.setUserName(userName);
-			user.setPassword(password);
+			user.setPassword(hashedPassword);
 			user.setIsAdm(adm);
 			
 			dao.update(user);
