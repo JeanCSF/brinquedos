@@ -1,29 +1,30 @@
-import './Sidebar.css'
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { useUserContext } from '../../utils/UserContext';
+import { AuthContext } from '../../contexts/auth';
 
-interface SidebarProps {
-  isOpen: boolean;
-}
 
-const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
-  const { user } = useUserContext();
+import './Sidebar.css'
+
+const Sidebar: React.FC = () => {
+  const { isAdm } = useContext(AuthContext);
   return (
-    <div className={`sidebar bg-gray-200 min-h-screen p-4 absolute top-0 left-0 transform transition-transform ease-in-out duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+    <div className="bg-gray-200 min-h-screen p-4 absolute">
       <div className="bg-gray-200 w-32">
-        <ul className="mt-11 text-center font-bold">
-          <li className="mt-4">
-            <Link to='/home' title='Home'>
+        <ul className="font-bold">
+          <li>
+            <Link to='/' title='Home'>
               Home
             </Link>
           </li>
+          {isAdm == '1' && (
+            <li className="mt-4">
+              <Link to='/' title='Home'>
+                Admin
+              </Link>
+            </li>
+          )}
           <li className="mt-4">
-            <Link to='/home' title='Home'>
-              Admin
-            </Link>
-          </li>
-          <li className="mt-4">
-            <Link to='/home' title='Home'>
+            <Link to='/' title='Home'>
               Home
             </Link>
           </li>

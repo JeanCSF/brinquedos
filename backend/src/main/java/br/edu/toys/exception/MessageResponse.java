@@ -1,17 +1,17 @@
 package br.edu.toys.exception;
 
-public class ErrorResponse {
+public class MessageResponse {
 	private int status;
 	private String message;
 	private long timestamp;
 
-	public ErrorResponse(int status, String message, long timestamp) {
+	public MessageResponse(int status, String message, long timestamp) {
 		this.status = status;
 		this.message = message;
 		this.timestamp = timestamp;
 	}
 	
-	public ErrorResponse() {
+	public MessageResponse() {
     }
 
 	public int getStatus() {

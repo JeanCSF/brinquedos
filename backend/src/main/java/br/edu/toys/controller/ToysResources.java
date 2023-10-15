@@ -7,7 +7,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 
 import br.edu.toys.dao.ToyDAO;
-import br.edu.toys.exception.ErrorResponse;
+import br.edu.toys.exception.MessageResponse;
 import br.edu.toys.model.Toy;
 import br.edu.toys.util.ImageUploadService;
 
@@ -59,7 +59,13 @@ public class ToysResources {
 			toy.setToyId(toyId);
 			boolean toyExists = dao.checkId(toy.getToyId());
 			if (toyExists) {
-				throw new WebApplicationException("Este código já está cadastrado!", Response.Status.BAD_REQUEST);
+				
+				MessageResponse errorResponse = new MessageResponse();
+				errorResponse.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
+				errorResponse.setMessage("Este código já está cadastrado!");
+				errorResponse.setTimestamp(System.currentTimeMillis());
+				return Response.status(Response.Status.BAD_REQUEST).entity(errorResponse).type(MediaType.APPLICATION_JSON).build();
+				
 			}
 			
 			InputStream imageInputStream = image.getDataHandler().getInputStream();
@@ -76,10 +82,19 @@ public class ToysResources {
 
 			dao.save(toy);
 
-			return Response.status(Response.Status.CREATED).entity(toy).build();
+			MessageResponse successMessage = new MessageResponse();
+			successMessage.setStatus(Response.Status.CREATED.getStatusCode());
+			successMessage.setMessage("Brinquedo criado com sucesso!");
+			successMessage.setTimestamp(System.currentTimeMillis());
+			return Response.status(Response.Status.CREATED).entity(successMessage).type(MediaType.APPLICATION_JSON).build();
+			
 		} catch (Exception e) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-					.entity("Erro ao criar o brinquedo: " + e.getMessage()).build();
+			e.printStackTrace();
+			MessageResponse errorResponse = new MessageResponse();
+			errorResponse.setStatus(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+			errorResponse.setMessage("Erro ao criar brinquedo. Detalhes: " + e.getMessage());
+			errorResponse.setTimestamp(System.currentTimeMillis());
+			throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorResponse).type(MediaType.APPLICATION_JSON).build());
 		}
 	}
 
@@ -92,11 +107,15 @@ public class ToysResources {
 	        if (toy != null) {
 	            return Response.status(Response.Status.OK).entity(toy).build();
 	        } else {
-	            return Response.status(Response.Status.NOT_FOUND).build();
+	        	MessageResponse errorResponse = new MessageResponse();
+				errorResponse.setStatus(Response.Status.NOT_FOUND.getStatusCode());
+				errorResponse.setMessage("Brinquedo não encontrado!");
+				errorResponse.setTimestamp(System.currentTimeMillis());
+				return Response.status(Response.Status.NOT_FOUND).entity(errorResponse).type(MediaType.APPLICATION_JSON).build();
 	        }
 	    } catch (Exception e) {
 	    	e.printStackTrace();
-			ErrorResponse errorResponse = new ErrorResponse();
+			MessageResponse errorResponse = new MessageResponse();
 			errorResponse.setStatus(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
 			errorResponse.setMessage("Erro ao buscar brinquedos. Detalhes: " + e.getMessage());
 			errorResponse.setTimestamp(System.currentTimeMillis());
@@ -122,7 +141,11 @@ public class ToysResources {
 			boolean toyExists = dao.checkId(toyId);
 			Toy toyToEdit = dao.find(toyId);
 			if (!toyExists) {
-				throw new WebApplicationException("Brinquedo não encontrado.", Response.Status.NOT_FOUND);
+				MessageResponse errorResponse = new MessageResponse();
+				errorResponse.setStatus(Response.Status.NOT_FOUND.getStatusCode());
+				errorResponse.setMessage("Brinquedo não encontrado!");
+				errorResponse.setTimestamp(System.currentTimeMillis());
+				return Response.status(Response.Status.NOT_FOUND).entity(errorResponse).type(MediaType.APPLICATION_JSON).build();
 			}
 			
 			String uploadFolder = servletContext.getRealPath("/") + "images\\toys_imgs\\toy_" + toyToEdit.getToyId() + "\\";
@@ -144,7 +167,12 @@ public class ToysResources {
 			
 			dao.update(toy);
 
-			return Response.status(Response.Status.OK).entity(toy).build();
+			MessageResponse successMessage = new MessageResponse();
+			successMessage.setStatus(Response.Status.OK.getStatusCode());
+			successMessage.setMessage("Brinquedo atualizado com sucesso!");
+			successMessage.setTimestamp(System.currentTimeMillis());
+			return Response.status(Response.Status.OK).entity(successMessage).type(MediaType.APPLICATION_JSON).build();
+			
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erro ao atualizar o brinquedo: " + e.getMessage()).build();
 		}
@@ -157,13 +185,25 @@ public class ToysResources {
 	    try {
 	        if (dao.checkId(toyId)) {
 	            dao.delete(toyId);
-	            return Response.status(Response.Status.NO_CONTENT).build();
+	            
+	            MessageResponse successMessage = new MessageResponse();
+				successMessage.setStatus(Response.Status.OK.getStatusCode());
+				successMessage.setMessage("Brinquedo deletado com sucesso!");
+				successMessage.setTimestamp(System.currentTimeMillis());
+				return Response.status(Response.Status.OK).entity(successMessage).type(MediaType.APPLICATION_JSON).build();
+				
 	        } else {
-	            return Response.status(Response.Status.NOT_FOUND).build();
+	        	
+	        	MessageResponse errorResponse = new MessageResponse();
+				errorResponse.setStatus(Response.Status.NOT_FOUND.getStatusCode());
+				errorResponse.setMessage("Brinquedo não encontrado!");
+				errorResponse.setTimestamp(System.currentTimeMillis());
+				return Response.status(Response.Status.NOT_FOUND).entity(errorResponse).type(MediaType.APPLICATION_JSON).build();
+				
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
-	        ErrorResponse errorResponse = new ErrorResponse();
+	        MessageResponse errorResponse = new MessageResponse();
 	        errorResponse.setStatus(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
 	        errorResponse.setMessage("Erro ao excluir o brinquedo. Detalhes: " + e.getMessage());
 	        errorResponse.setTimestamp(System.currentTimeMillis());
@@ -183,7 +223,7 @@ public class ToysResources {
 		} catch (Exception e) {
 
 			e.printStackTrace();
-			ErrorResponse errorResponse = new ErrorResponse();
+			MessageResponse errorResponse = new MessageResponse();
 			errorResponse.setStatus(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
 			errorResponse.setMessage("Erro ao buscar brinquedos. Detalhes: " + e.getMessage());
 			errorResponse.setTimestamp(System.currentTimeMillis());
