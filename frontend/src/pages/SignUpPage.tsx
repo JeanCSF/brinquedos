@@ -23,8 +23,22 @@ const SignUpPage: React.FC = () => {
         setIsToastVisible(false);
     };
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const userInput = e.target.value;
+        const regex = /^[a-zA-Z0-9_]*$/;
+    
+        if (regex.test(userInput)) {
+            setUser(userInput);
+        }
+        showToast('O nome de usuário não pode conter caracteres especiais!', 'warning');
+      };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (!user || !password || !userImage) {
+            showToast('Todos os Campos são obrigatórios', 'warning');
+            return;
+        }
         const formData = new FormData();
         formData.append('user', user);
         formData.append('password', password);
@@ -77,7 +91,7 @@ const SignUpPage: React.FC = () => {
                             type="text"
                             placeholder="Digite seu usuário"
                             value={user}
-                            onChange={(e) => setUser(e.target.value)}
+                            onChange={handleInputChange}
                         />
                     </div>
                     <div className="mb-6">

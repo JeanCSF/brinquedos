@@ -8,6 +8,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.mindrot.jbcrypt.BCrypt;
 
 import br.edu.toys.exception.MessageResponse;
+import br.edu.toys.util.FormValidation;
 import br.edu.toys.util.ImageUploadService;
 import br.edu.toys.dao.UserDAO;
 import br.edu.toys.model.User;
@@ -42,6 +43,7 @@ public class UsersResources {
 
 	private UserDAO dao = new UserDAO();
 	private User user = new User();
+	private FormValidation validation = new FormValidation();
 
 	@POST 
 	@Path("/user-new") 
@@ -52,10 +54,21 @@ public class UsersResources {
 
 		try {
 			boolean userExists = dao.checkUserName(userName);
+			boolean userValid = validation.isValidUsername(userName);
+			
 			if (userExists) {
 				MessageResponse errorResponse = new MessageResponse();
 				errorResponse.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
 				errorResponse.setMessage("Este usuário já está cadastrado!");
+				errorResponse.setTimestamp(System.currentTimeMillis());
+
+				return Response.status(Response.Status.BAD_REQUEST).entity(errorResponse).type(MediaType.APPLICATION_JSON).build();
+		    }
+			
+			if (!userValid) {
+				MessageResponse errorResponse = new MessageResponse();
+				errorResponse.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
+				errorResponse.setMessage("Nome de usuário possui caracteres inválidos!");
 				errorResponse.setTimestamp(System.currentTimeMillis());
 
 				return Response.status(Response.Status.BAD_REQUEST).entity(errorResponse).type(MediaType.APPLICATION_JSON).build();
