@@ -26,12 +26,13 @@ const SignUpPage: React.FC = () => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const userInput = e.target.value;
         const regex = /^[a-zA-Z0-9_]*$/;
-    
+
         if (regex.test(userInput)) {
             setUser(userInput);
+        } else {
+            showToast('O nome de usuário não pode conter caracteres especiais!', 'warning');
         }
-        showToast('O nome de usuário não pode conter caracteres especiais!', 'warning');
-      };
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
