@@ -43,7 +43,7 @@ const SignUpPage: React.FC = () => {
             showToast(response.data.message, 'success');
             setTimeout(() => {
                 navigate("/login");
-            }, 500);
+            }, 1500);
 
         } catch (error) {
             if (axios.isAxiosError(error)) {
