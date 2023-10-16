@@ -1,0 +1,3 @@
+[build]
+  command = "npm run build" # comando para construir o projeto, se aplicável
+  publish = "frontend/dist" # pasta a ser publicada
