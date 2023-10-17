@@ -1,19 +1,43 @@
 import { useState, useContext } from "react";
-import { AuthContext } from "../contexts/auth";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../contexts/auth";
+import Toast from '../components/notifications/Toast';
 
 const LoginPage: React.FC = () => {
     const { login } = useContext(AuthContext);
     const [userName, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
+    const [isToastVisible, setIsToastVisible] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+    const [toastType, setToastType] = useState<'success' | 'error' | 'warning'>('error');
+
+    const showToast = (message: string, type: 'success' | 'error' | 'warning') => {
+        setToastMessage(message);
+        setToastType(type);
+        setIsToastVisible(true);
+    };
+
+    const hideToast = () => {
+        setIsToastVisible(false);
+    };
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (!userName || !password) {
+            showToast('Todos os Campos são obrigatórios', 'warning');
+            return;
+        }
         login(userName, password)
     };
 
     return (
         <div className="flex items-center justify-center h-screen">
+            <Toast
+                    message={toastMessage}
+                    type={toastType}
+                    isToastVisible={isToastVisible}
+                    hideToast={hideToast} />
             <div className="w-96 bg-white rounded p-8 shadow">
                 <h2 className="text-2xl font-bold mb-4">Login</h2>
                 <form onSubmit={handleSubmit}>
