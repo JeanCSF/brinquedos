@@ -1,33 +1,96 @@
 import { useState } from "react";
+import axios from 'axios';
+import { Toy } from "../../pages/AdminPage";
+
 import CurrencyInput from "react-currency-input-field";
+import Toast from "../notifications/Toast";
+
+
 
 type ModalProps = {
     showModal: boolean;
     setShowModal: (show: boolean) => void;
+    toyToEdit: Toy | null;
+    formData: FormData;
 };
 
+
 const FormModal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
+
+    const [isToastVisible, setIsToastVisible] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+    const [toastType, setToastType] = useState<'success' | 'error' | 'warning'>('error');
+
+    const showToast = (message: string, type: 'success' | 'error' | 'warning') => {
+        setToastMessage(message);
+        setToastType(type);
+        setIsToastVisible(true);
+    };
+
+    const hideToast = () => {
+        setIsToastVisible(false);
+    };
+
     const [toyId, setToyId] = useState("");
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState("");
     const [details, setDetails] = useState("");
     const [brand, setBrand] = useState("");
     const [price, setPrice] = useState<string>('');
+    const [image, setImage] = useState<File | null>(null);
 
     if (!showModal) {
         return null;
     }
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-    };
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
+        if (!toyId || !description || !category || !details || !brand || !price || !image) {
+            showToast('Todos os Campos são obrigatórios', 'warning');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('toy_id', toyId);
+        formData.append('description', description);
+        formData.append('category', category);
+        formData.append('details', details);
+        formData.append('brand', brand);
+        formData.append('price', price.replace(",", "."));
+        if (image) {
+            formData.append('image', image);
+        }
+
+        try {
+            const response = await axios.post('http://localhost:8080/toys/api/new', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+
+                }
+            });
+            showToast(response.data.message, 'success');
+            setShowModal(false);
+
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                if (error.response) {
+                    showToast(error.response.data.message, 'error')
+                } else {
+                    console.error('Error during insert:', error.message);
+                }
+            }
+        }
     };
 
     return (
         <div>
+            <Toast
+                message={toastMessage}
+                type={toastType}
+                isToastVisible={isToastVisible}
+                hideToast={hideToast} 
+                />
             {showModal && (
-                <div className="fixed z-50 inset-0 overflow-y-auto">
+                <div className="fixed z-40 inset-0 overflow-y-auto mt-10">
                     <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                         <div
                             className="fixed inset-0 transition-opacity"
@@ -54,7 +117,7 @@ const FormModal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
                                 <div className="grid grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="toy_id">
-                                            Toy ID
+                                            Código
                                         </label>
                                         <input
                                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -67,7 +130,7 @@ const FormModal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
                                     </div>
                                     <div>
                                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
-                                            Description
+                                            Descrição
                                         </label>
                                         <input
                                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -89,9 +152,11 @@ const FormModal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
                                         className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                                     >
                                         <option value="">Selecione uma categoria</option>
-                                        <option value="category1">Categoria 1</option>
-                                        <option value="category2">Categoria 2</option>
-                                        <option value="category3">Categoria 3</option>
+                                        <option value="Educativos">Educativos</option>
+                                        <option value="Pelúcia">Pelúcia</option>
+                                        <option value="Jogos de tabuleiro">Jogos de tabuleiro</option>
+                                        <option value="Veículos de brinquedo">Veículos de brinquedo</option>
+                                        <option value="Jogos de tabuleiro">Jogos de tabuleiro</option>
                                     </select>
                                 </div>
                                 <div className="mb-4">
@@ -132,7 +197,7 @@ const FormModal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
                                             decimalsLimit={2}
                                             onValueChange={(value) => setPrice(value || '')}
                                             prefix="R$"
-                                            className="shadow appearance-none border rounded w-32 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" // Ajuste a largura conforme necessário
+                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" // Ajuste a largura conforme necessário
                                         />
                                     </div>
                                 </div>
@@ -144,7 +209,11 @@ const FormModal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="image"
                                         type="file"
-                                        onChange={handleImageChange}
+                                        onChange={(e) => {
+                                            if (e.target.files) {
+                                                setImage(e.target.files[0]);
+                                            }
+                                        }}
                                     />
                                 </div>
                                 <div className="flex items-center justify-end mt-4">

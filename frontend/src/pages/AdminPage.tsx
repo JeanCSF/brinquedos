@@ -5,12 +5,32 @@ import { BsFillGearFill, BsFillPencilFill, BsTrash3, BsPlus } from "react-icons/
 import Pagination from "../components/pagination/Pagination";
 import FormModal from "../components/modal/FormModal";
 
+export interface Toy {
+    toy_id: number;
+    description: string;
+    category: string;
+    details: string;
+    brand: Date | null;
+    price: string;
+    image: File | null;
+}
+
 const AdminPage: React.FC = () => {
     const [toys, setToys] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [toysPerPage] = useState(10);
+
     const [showModal, setShowModal] = useState(false);
+    const [formData, setFormData] = useState({
+        form_toy_id: '',
+        form_description: '',
+        form_category: '',
+        form_details: '',
+        form_brand: '',
+        form_price: '',
+        form_image: '',
+    });
 
     const fetchToys = async () => {
         try {

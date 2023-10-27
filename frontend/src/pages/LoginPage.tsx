@@ -27,17 +27,19 @@ const LoginPage: React.FC = () => {
         if (!userName || !password) {
             showToast('Todos os Campos são obrigatórios', 'warning');
             return;
+        } else {
+            showToast(`Bem vindo de volta ${userName}`, 'success');
+            login(userName, password)
         }
-        login(userName, password)
     };
 
     return (
         <div className="flex items-center justify-center h-screen">
             <Toast
-                    message={toastMessage}
-                    type={toastType}
-                    isToastVisible={isToastVisible}
-                    hideToast={hideToast} />
+                message={toastMessage}
+                type={toastType}
+                isToastVisible={isToastVisible}
+                hideToast={hideToast} />
             <div className="w-96 bg-white rounded p-8 shadow">
                 <h2 className="text-2xl font-bold mb-4">Login</h2>
                 <form onSubmit={handleSubmit}>

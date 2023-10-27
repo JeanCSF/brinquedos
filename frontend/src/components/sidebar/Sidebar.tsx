@@ -20,7 +20,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, handleToggle, isAdm }) => {
             Home
           </Link>
         </li>
-        {isAdm === '1' && (
+        {isAdm == '1' && (
           <li className="p-4">
             <Link to="/admin" title="Admin">
               Administração

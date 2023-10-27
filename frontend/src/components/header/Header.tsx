@@ -3,7 +3,7 @@ import { AuthContext } from '../../contexts/auth';
 import { Link } from 'react-router-dom';
 import Dropdown from '../dropdown/Dropdown';
 
-import headerIcon from '../../../public/icon-header.svg';
+import headerIcon from './icon-header.svg';
 
 const Header: React.FC = () => {
   const { userImg, logout } = useContext(AuthContext);

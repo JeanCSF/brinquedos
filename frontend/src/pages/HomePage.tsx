@@ -9,6 +9,7 @@ import { FaBars } from "react-icons/fa";
 
 const HomePage: React.FC = () => {
     const { isAdm } = useContext(AuthContext);
+    console.log('homepage'+ isAdm);
     const [isOpen, setIsOpen] = useState(true);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 

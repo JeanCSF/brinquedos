@@ -35,7 +35,7 @@ const ToyCard: React.FC<ToyCardProps> = ({
                 </span>
             </div>
             <span className="inline-block  rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
-                R$ {price.toFixed(2)}
+                R$ {price.toFixed(2).replace(".", ",")}
             </span>
         </div>
     );

@@ -34,7 +34,7 @@ const Toast: React.FC<ToastProps> = ({ message, type, isToastVisible, hideToast 
 
   return (
     <div
-      className={`fixed top-5 right-5 px-4 py-2 rounded-md text-white ${getBackgroundColor()}`}
+      className={`fixed z-50 top-5 right-5 px-4 py-2 rounded-md text-white ${getBackgroundColor()}`}
       style={{ display: isToastVisible ? 'block' : 'none' }}
     >
       <div className="text-end">
