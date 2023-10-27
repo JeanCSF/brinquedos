@@ -1,16 +1,16 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../../contexts/auth';
-import { MdToys } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import Dropdown from '../dropdown/Dropdown';
-import './Header.css';
+
+import headerIcon from '../../../public/icon-header.svg';
 
 const Header: React.FC = () => {
   const { userImg, logout } = useContext(AuthContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleLogout = () => {
-    logout(); // implement your logout function
+    logout();
   };
 
   const toggleDropdown = () => {
@@ -18,20 +18,23 @@ const Header: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-200 w-100 p-1 absolute right-0 left-0">
+    <div className="bg-indigo-700 w-full p-1 fixed top-0 z-50">
       <div className="flex items-center justify-between text-center font-bold text-stone-600">
-        <div
-          style={{ width: 117, height: 60 }}
-          className="border border-purple-800 flex justify-center items-center"
-        >
+        <div className="border border-emerald-50 p-2">
           <Link to="/" title="Home">
-            <MdToys className="text-3xl" />
+            <img src={headerIcon} alt="header-icon" className="w-10 h-10" />
           </Link>
         </div>
-        <p className="text-3xl">TOYS DB</p>
+        <p className="text-3xl text-emerald-50">TOYDB</p>
         <div className="relative">
-          <div className="rounded-full border border-purple-800 user-img" onClick={toggleDropdown}>
-            {userImg && <img src={userImg.toString().replace(/['"]+/g, '')} alt="profile" />}
+          <div className="rounded-full border border-emerald-50 cursor-pointer" onClick={toggleDropdown}>
+            {userImg && (
+              <img
+                src={userImg.toString().replace(/['"]+/g, '')}
+                alt="profile"
+                className="w-14 h-14 p-1 rounded-full"
+              />
+            )}
           </div>
           {dropdownOpen && (
             <Dropdown>
@@ -39,7 +42,6 @@ const Header: React.FC = () => {
                 <li>
                   <button onClick={handleLogout}>Logout</button>
                 </li>
-                {/* Add more options as needed */}
               </ul>
             </Dropdown>
           )}

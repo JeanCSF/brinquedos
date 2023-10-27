@@ -13,6 +13,7 @@ import HomePage from "../pages/HomePage";
 import { AuthProvider, AuthContext } from "../contexts/auth";
 import { ReactNode } from "react";
 import HomePageContent from "../pages/HomePageContent";
+import AdminPage from "../pages/AdminPage";
 
 const Private = ({ children }: { children: ReactNode }) => {
     const { authenticated, loading } = useContext(AuthContext);
@@ -36,6 +37,7 @@ const AppRoutes = () => {
                     <Route path="/signup" element={<SignUpPage />} />
                     <Route element={<Private> <HomePage /> </Private>}>
                         <Route path="/" element={<HomePageContent/>} />
+                        <Route path="/admin" element={<AdminPage/>} />
                     </Route>
                 </Routes>
             </AuthProvider>

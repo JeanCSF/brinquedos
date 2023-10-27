@@ -2,57 +2,9 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-body,
-html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden;
-}
-
-ul {
-    margin: 0;
-}
-
-header {
-    width: 100%;
-    height: 15vh;
-    margin: 0;
-    padding: 0;
-}
-
-footer {
-    height: 5vh;
-    margin: 0;
-    padding: 0;
-}
-
-.component {
-    padding: .5rem;
-    margin: 1.7rem 0 0 0;
-    border: 2px solid #efefef;
-    overflow-y: scroll;
-    border-radius: 10px;
-    max-width: 100%;
-}
-
-.containerNavAndComponent {
-    height: 80vh;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
-
-.navBar {
-    height: fit-content;
-    width: 65px;
-    margin: 0;
-    padding: 0;
-}
-
 .toy-img {
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
     overflow: hidden;
     border: 2px solid #efefef;
     border-radius: 10px;
@@ -61,4 +13,15 @@ footer {
 
 .toy-card {
     max-width: 220px;
+}
+
+@media (max-width: 767px) {
+    .toy-card {
+        max-width: 100%;
+    }
+
+    .toy-img {
+        width: 250px;
+        height: 250px;
+    }
 }

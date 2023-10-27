@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import ToyCard from "../components/toycard/ToyCard";
 import Pagination from "../components/pagination/Pagination";
 
-const HomePage: React.FC = () => {
+const HomePageContent: React.FC = () => {
     const [toys, setToys] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
-    const [toysPerPage] = useState(10);
+    const [toysPerPage] = useState(12);
 
     const fetchToys = async () => {
         try {
@@ -60,4 +60,4 @@ const HomePage: React.FC = () => {
     );
 };
 
-export default HomePage;
+export default HomePageContent;
