@@ -2,6 +2,33 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+:root {
+    --tdbGray: #F4F4F4;
+    --tdbRed: #F84C5A;
+    --tdbCyan: #59D6EA;
+    --tdbYellow: #FFBD02;
+}
+
+.bg-tdb-gray {
+    background-color: var(--tdbGray);
+}
+
+.text-tdb-gray {
+    color: var(--tdbGray);
+}
+
+.text-tdb-red {
+    color: var(--tdbRed);
+}
+
+.text-tdb-cyan {
+    color: var(--tdbCyan);
+}
+
+.text-tdb-yellow {
+    color: var(--tdbYellow);
+}
+
 .toy-img {
     width: 180px;
     height: 180px;

@@ -12,11 +12,16 @@ import HomePage from "../pages/HomePage";
 
 import { AuthProvider, AuthContext } from "../contexts/auth";
 import { ReactNode } from "react";
-import HomePageContent from "../pages/HomePageContent";
+
 import AdminPage from "../pages/AdminPage";
+import Error401Page from "../pages/Error401Page";
+
+import HomePageContent from "../pages/HomePageContent";
+import ToyPage from "../pages/ToyPage";
+import CategoryPage from "../pages/category/CategoryPage";
 
 const Private = ({ children }: { children: ReactNode }) => {
-    const { authenticated, loading} = useContext(AuthContext);
+    const { authenticated, loading } = useContext(AuthContext);
     if (loading) {
         return <div className="loading">Carregando...</div>;
     }
@@ -28,21 +33,19 @@ const Private = ({ children }: { children: ReactNode }) => {
 };
 
 const Admin = ({ children }: { children: ReactNode }) => {
-    const { authenticated, loading, isAdm} = useContext(AuthContext);
-    console.log('admin '+isAdm)
+    const { loading, isAdm } = useContext(AuthContext);
+
     if (loading) {
         return <div className="loading">Carregando...</div>;
     }
 
     if (isAdm != '1') {
-        return <Navigate to="/" />;
+        return <Navigate to="/unauthorized" />;
     }
     return children;
 };
 
 const AppRoutes = () => {
-    const { isAdm } = useContext(AuthContext);
-    console.log('routes'+isAdm)
     return (
         <Router>
             <AuthProvider>
@@ -51,6 +54,9 @@ const AppRoutes = () => {
                     <Route path="/signup" element={<SignUpPage />} />
                     <Route element={<Private> <HomePage /> </Private>}>
                         <Route path="/" element={<HomePageContent />} />
+                        <Route path="/toy/:id" element={<ToyPage />} />
+                        <Route path="/catalog" element={<CategoryPage />} />
+                        <Route path="/unauthorized" element={<Error401Page />} />
                         <Route path="/admin" element={<Admin> <AdminPage /> </Admin>} />
                     </Route>
                 </Routes>

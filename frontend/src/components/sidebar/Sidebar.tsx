@@ -1,16 +1,18 @@
-import React from 'react';
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { FaBars } from 'react-icons/fa';
+import { AuthContext } from '../../contexts/auth';
 
 interface SidebarProps {
   isOpen: boolean;
   handleToggle: () => void;
-  isAdm: string | null;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isOpen, handleToggle, isAdm }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, handleToggle }) => {
+  const { isAdm } = useContext(AuthContext);
+
   return (
-    <div className={`sidebar ${isOpen ? 'translate-x-0' : '-translate-x-full'} fixed top-0 left-0 h-screen w-48 bg-gray-200 transition-transform duration-300 ease-in-out`}>
+    <div className={`sidebar ${isOpen ? 'translate-x-0' : '-translate-x-full'} fixed top-0 left-0 h-screen w-48 bg-tdb-gray  transition-transform duration-300 ease-in-out`}>
       <div className="sidebar-toggle p-4">
         <FaBars onClick={handleToggle} />
       </div>
@@ -27,6 +29,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, handleToggle, isAdm }) => {
             </Link>
           </li>
         )}
+        <li className="p-4">
+          <Link to="/catalog" title="Catálogo de Brinquedos">
+          Catálogo
+          </Link>
+        </li>
       </ul>
     </div>
   );

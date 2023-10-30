@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 import { BsFillGearFill, BsFillPencilFill, BsTrash3, BsPlus } from "react-icons/bs";
 import Pagination from "../components/pagination/Pagination";
+import BreadCrumb from "../components/breadcrumb/BreadCrumb";
 import FormModal from "../components/modal/FormModal";
 
 export interface Toy {
@@ -16,6 +18,10 @@ export interface Toy {
 }
 
 const AdminPage: React.FC = () => {
+    const paths = [
+        { name: "Home", path: "/" },
+        { name: "Administração", path: "/admin" },
+    ];
     const [toys, setToys] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
@@ -54,6 +60,7 @@ const AdminPage: React.FC = () => {
 
     return (
         <div className="container mx-auto p-6">
+            <BreadCrumb paths={paths}/>
             <FormModal showModal={showModal} setShowModal={setShowModal} />
             <div className="text-end">
                 <button onClick={() => setShowModal(true)} title="Adicionar Brinquedo" className="text-lime-700 text-3xl"><BsPlus /></button>
@@ -86,7 +93,7 @@ const AdminPage: React.FC = () => {
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <img src={toy.image} alt={toy.brand} className="h-10 w-10 rounded-full" />
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">{toy.description}</td>
+                            <td className="px-6 py-4 whitespace-nowrap"><Link to={`../toy/${toy.toyId}`}>{toy.description}</Link></td>
                             <td className="px-6 py-4 whitespace-nowrap">{toy.brand}</td>
                             <td className="px-6 py-4 whitespace-nowrap">{toy.category}</td>
                             <td className="px-6 py-4 whitespace-nowrap">{toy.details}</td>

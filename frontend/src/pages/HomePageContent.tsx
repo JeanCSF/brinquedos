@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import ToyCard from "../components/toycard/ToyCard";
 import Pagination from "../components/pagination/Pagination";
+import BreadCrumb from "../components/breadcrumb/BreadCrumb";
 
 const HomePageContent: React.FC = () => {
+    const paths = [{ name: "Home", path: "/" },];
     const [toys, setToys] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
@@ -31,11 +33,13 @@ const HomePageContent: React.FC = () => {
 
     return (
         <div className="container">
+            <BreadCrumb paths={paths} />
             <Pagination
                 currentPage={currentPage}
                 totalPages={Math.ceil(toys.length / toysPerPage)}
                 onPageChange={paginate}
             />
+
             <div className="flex flex-wrap">
                 {currentToys.map((toy, index) => (
                     <ToyCard

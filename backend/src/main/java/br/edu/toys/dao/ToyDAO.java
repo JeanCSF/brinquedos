@@ -155,5 +155,22 @@ public class ToyDAO {
 			ConnectionFactory.closeConnection(conn, ps);
 		}
 	}
+	
+	public List<String> categories() throws Exception {
+	    try {
+	        ps = conn.prepareStatement("SELECT DISTINCT category FROM tb_toys");
+	        rs = ps.executeQuery();
+	        List<String> categories = new ArrayList<>();
 
+	        while (rs.next()) {
+	            String category = rs.getString("category");
+	            categories.add(category);
+	        }
+	        return categories;
+	    } catch (SQLException sqle) {
+	        throw new Exception(sqle);
+	    } finally {
+	        ConnectionFactory.closeConnection(conn, ps, rs);
+	    }
+	}
 }

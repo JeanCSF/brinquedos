@@ -18,21 +18,21 @@ const Header: React.FC = () => {
   };
 
   return (
-    <div className="bg-indigo-700 w-full p-1 fixed top-0 z-50">
+    <div className="bg-tdb-gray w-full p-1 fixed top-0 z-50">
       <div className="flex items-center justify-between text-center font-bold text-stone-600">
-        <div className="border border-emerald-50 p-2">
+        <div className="p-2">
           <Link to="/" title="Home">
             <img src={headerIcon} alt="header-icon" className="w-10 h-10" />
           </Link>
         </div>
-        <p className="text-3xl text-emerald-50">TOYDB</p>
+        <p className="text-3xl text-tdb-red">TOY<span className="text-tdb-yellow">DB</span></p>
         <div className="relative">
-          <div className="rounded-full border border-emerald-50 cursor-pointer" onClick={toggleDropdown}>
+          <div className="rounded-full cursor-pointer" onClick={toggleDropdown}>
             {userImg && (
               <img
                 src={userImg.toString().replace(/['"]+/g, '')}
                 alt="profile"
-                className="w-14 h-14 p-1 rounded-full"
+                className="w-14 h-14 rounded-full"
               />
             )}
           </div>
