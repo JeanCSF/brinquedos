@@ -39,7 +39,7 @@ const Admin = ({ children }: { children: ReactNode }) => {
         return <div className="loading">Carregando...</div>;
     }
 
-    if (isAdm != '1') {
+    if (isAdm == '1') {
         return <Navigate to="/unauthorized" />;
     }
     return children;

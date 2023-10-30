@@ -37,10 +37,13 @@ const ToyPage: React.FC = () => {
             <h1 className="text-3xl font-bold text-center mb-8">{toy.description}</h1>
             <div className="bg-white shadow-md rounded-md p-6">
                 <img src={toy.image} alt={toy.name} className="mt-4 mx-auto" style={{ maxWidth: '300px' }} />
-                <p className="text-gray-700">Category: {toy.category}</p>
-                <p className="text-gray-700">Brand: {toy.brand}</p>
-                <p className="text-gray-700">Details: {toy.details}</p>
-                <p className="text-gray-700">Price: {toy.price}</p>
+                <div className="p-6">
+                <p className="text-gray-700">Código: {toy.toyId}</p>
+                <p className="text-gray-700">Categoria: {toy.category}</p>
+                <p className="text-gray-700">Marca: {toy.brand}</p>
+                <p className="text-gray-700">Detalhes: {toy.details}</p>
+                <p className="text-gray-700">Preço: R$ {toy.price.toFixed(2).replace(".", ",")}</p>
+                </div>
             </div>
         </div>
     );

@@ -6,7 +6,7 @@ type BreadcrumbProps = {
 
 const BreadCrumb: React.FC<BreadcrumbProps> = ({ paths }) => {
   return (
-    <nav className="text-sm ms-5" aria-label="Breadcrumb">
+    <nav className="text-sm ms-8" aria-label="Breadcrumb">
       <ol className="list-none p-0 inline-flex">
         {paths.map((path, index) => (
           <li className="flex items-center" key={index}>

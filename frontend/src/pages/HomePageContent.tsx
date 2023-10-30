@@ -33,12 +33,12 @@ const HomePageContent: React.FC = () => {
 
     return (
         <div className="container">
-            <BreadCrumb paths={paths} />
             <Pagination
                 currentPage={currentPage}
                 totalPages={Math.ceil(toys.length / toysPerPage)}
                 onPageChange={paginate}
             />
+            <BreadCrumb paths={paths} />
 
             <div className="flex flex-wrap">
                 {currentToys.map((toy, index) => (
