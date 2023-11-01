@@ -173,4 +173,29 @@ public class ToyDAO {
 	        ConnectionFactory.closeConnection(conn, ps, rs);
 	    }
 	}
+	
+	public List<Toy> toysByCategory(String categoryName) throws Exception {
+		try {
+			ps = conn.prepareStatement("SELECT * FROM tb_toys where category = ?");
+			ps.setString(1, categoryName);
+			rs = ps.executeQuery();
+			List<Toy> list = new ArrayList<Toy>();
+
+			while (rs.next()) {
+				int toy_id = rs.getInt("toy_id");
+				String description = rs.getString("description");
+				String category = rs.getString("category");
+				String brand = rs.getString("brand");
+				String image = rs.getString("image");
+				float price = rs.getFloat("price");
+				String details = rs.getString("details");
+				list.add(new Toy(toy_id, description, category, brand, image, price, details));
+			}
+			return list;
+		} catch (SQLException sqle) {
+			throw new Exception(sqle);
+		} finally {
+			ConnectionFactory.closeConnection(conn, ps, rs);
+		}
+	}
 }

@@ -8,13 +8,13 @@ import BreadCrumb from "../components/breadcrumb/BreadCrumb";
 import FormModal from "../components/modal/FormModal";
 
 export interface Toy {
-    toy_id: number;
+    toyId: string;
     description: string;
     category: string;
     details: string;
-    brand: Date | null;
-    price: string;
-    image: File | null;
+    brand: string;
+    price: number;
+    image: string;
 }
 
 const AdminPage: React.FC = () => {
@@ -22,21 +22,17 @@ const AdminPage: React.FC = () => {
         { name: "Home", path: "/" },
         { name: "Administração", path: "/admin" },
     ];
-    const [toys, setToys] = useState<any[]>([]);
+    const [toys, setToys] = useState<Toy[]>([]);
+    const [toyToEdit, setToyToEdit] = useState<Toy | null>(null);
+    const [toyToDelete, setToyToDelete] = useState<number | null>(null);
+    const [selectedToy, setSelectedAluno] = useState<Toy | null>(null);
+
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [toysPerPage] = useState(10);
 
     const [showModal, setShowModal] = useState(false);
-    const [formData, setFormData] = useState({
-        form_toy_id: '',
-        form_description: '',
-        form_category: '',
-        form_details: '',
-        form_brand: '',
-        form_price: '',
-        form_image: '',
-    });
+    
 
     const fetchToys = async () => {
         try {
@@ -60,10 +56,22 @@ const AdminPage: React.FC = () => {
 
     return (
         <div className="container mx-auto p-6">
-            <BreadCrumb paths={paths}/>
-            <FormModal showModal={showModal} setShowModal={setShowModal} />
+            <BreadCrumb paths={paths} />
+            <FormModal
+                showModal={showModal}
+                setShowModal={setShowModal}
+                toyToEdit={toyToEdit}
+            />
             <div className="text-end">
-                <button onClick={() => setShowModal(true)} title="Adicionar Brinquedo" className="text-lime-700 text-3xl"><BsPlus /></button>
+                <button
+                    onClick={() => {
+                        setShowModal(true);
+                        setToyToEdit(null);
+                    }}
+                    title="Adicionar Brinquedo"
+                    className="text-lime-700 text-3xl">
+                    <BsPlus />
+                </button>
             </div>
             {loading && <p>Loading...</p>}
             <Pagination
@@ -100,7 +108,13 @@ const AdminPage: React.FC = () => {
                             <td className="px-6 py-4 whitespace-nowrap">R$ {toy.price.toFixed(2).replace(".", ",")}</td>
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center justify-center gap-4">
-                                    <button className="text-blue-500"><BsFillPencilFill /></button>
+                                    <button
+                                        className="text-blue-500"
+                                        onClick={() => {
+                                            setToyToEdit(toy);
+                                            setShowModal(true);
+                                        }}
+                                    ><BsFillPencilFill /></button>
                                     <button className="text-red-500"><BsTrash3 /></button>
                                 </div>
                             </td>

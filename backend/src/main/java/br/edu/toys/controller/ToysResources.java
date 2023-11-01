@@ -252,4 +252,24 @@ public class ToysResources {
 					.entity(errorResponse).type(MediaType.APPLICATION_JSON).build());
 		}
 	}
+	
+	@GET
+	@Path("/category/{categoryName}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Toy> listToysByCategory(@PathParam("categoryName") String categoryName) {
+		try {
+			List<Toy> toys = dao.toysByCategory(categoryName);
+			return toys;
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			MessageResponse errorResponse = new MessageResponse();
+			errorResponse.setStatus(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+			errorResponse.setMessage("Erro ao buscar categorias. Detalhes: " + e.getMessage());
+			errorResponse.setTimestamp(System.currentTimeMillis());
+
+			throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity(errorResponse).type(MediaType.APPLICATION_JSON).build());
+		}
+	}
 }
