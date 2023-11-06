@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 import img1 from './img1.svg';
@@ -47,10 +48,12 @@ const CategoryPage: React.FC = () => {
             <BreadCrumb paths={paths} />
             <div className="flex flex-wrap gap-8 mt-5">
                 {categories.map((category, index) => (
-                    <div key={index} className="bg-white rounded-lg shadow-md p-4" style={{maxWidth:250}}>
+                    <Link to={`../category/${category}`}>
+                        <div key={index} className="bg-white rounded-lg shadow-md p-4" style={{ maxWidth: 250 }}>
                             <img src={randomImage} alt="Category" className="w-full h-64 object-cover mb-4" />
-                        <h3 className="text-lg font-semibold mb-2">{category}</h3>
-                    </div>
+                            <h3 className="text-lg font-semibold mb-2">{category}</h3>
+                        </div>
+                    </Link>
                 ))}
             </div>
         </div>

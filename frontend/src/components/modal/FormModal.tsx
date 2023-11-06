@@ -1,46 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from 'axios';
-import { Toy } from "../../pages/AdminPage";
 
 import CurrencyInput from "react-currency-input-field";
 import Toast from "../notifications/Toast";
 
-
-
-type ModalProps = {
-    showModal: boolean;
-    setShowModal: (show: boolean) => void;
-    toyToEdit: Toy | null;
-};
-
-
-const FormModal: React.FC<ModalProps> = (props: ModalProps) => {
-    const [toyData, setToyData] = useState<Toy>({
-        toyId: '',
-        description: '',
-        category: '',
-        details: '',
-        brand: '',
-        price: 0,
-        image: ''
-    });
-
-    useEffect(() => {
-        if (props.toyToEdit) {
-            setToyData(props.toyToEdit);
-        } else {
-            setToyData({
-                toyId: '',
-                description: '',
-                category: '',
-                details: '',
-                brand: '',
-                price: 0,
-                image: ''
-            });
-        }
-    }, [props.toyToEdit]);
-
+const FormModal: React.FC<ModalProps> = ({ showModal, setShowModal, toyToEdit, addNewToy, updateToy }) => {
     const [isToastVisible, setIsToastVisible] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const [toastType, setToastType] = useState<'success' | 'error' | 'warning'>('error');
@@ -55,45 +19,70 @@ const FormModal: React.FC<ModalProps> = (props: ModalProps) => {
         setIsToastVisible(false);
     };
 
-    const [toyId, setToyId] = useState("");
-    const [description, setDescription] = useState("");
-    const [category, setCategory] = useState("");
-    const [details, setDetails] = useState("");
-    const [brand, setBrand] = useState("");
-    const [price, setPrice] = useState<string>('');
+    const [toyId, setToyId] = useState<string | null>("");
+    const [description, setDescription] = useState<string | null>("");
+    const [category, setCategory] = useState('');
+    const [customCategory, setCustomCategory] = useState('');
+    const [showCustomCategory, setShowCustomCategory] = useState(false);
+    const [details, setDetails] = useState<string | null>("");
+    const [brand, setBrand] = useState<string | null>("");
+    const [price, setPrice] = useState<string | null>("");
     const [image, setImage] = useState<File | null>(null);
+    const [imageUrl, setImageUrl] = useState("");
 
-    if (!props.showModal) {
+    const formReset = () => {
+        setToyId("");
+        setCategory("");
+        setBrand("");
+        setDescription("");
+        setDetails("")
+        setPrice("");
+        setImage(null);
+        setImageUrl("");
+    };
+
+    const handleCategoryChange = (e) => {
+        const selectedCategory = e.target.value;
+        if (selectedCategory === 'custom') {
+            setShowCustomCategory(true);
+        } else {
+            setShowCustomCategory(false);
+            setCategory(selectedCategory);
+        }
+    };
+
+    const handleImageChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                setImageUrl(event.target.result);
+            };
+            reader.readAsDataURL(e.target.files[0]);
+            setImage(e.target.files[0]);
+        }
+    };
+
+    useEffect(() => {
+        if (toyToEdit) {
+            setToyId(toyToEdit.toyId);
+            setDescription(toyToEdit.description);
+            setCategory(toyToEdit.category);
+            setDetails(toyToEdit.details);
+            setBrand(toyToEdit.brand);
+            setPrice(toyToEdit.price.toString());
+            setImageUrl(toyToEdit.image);
+        } else {
+            formReset();
+        }
+    }, [toyToEdit]);
+
+    if (!showModal) {
         return null;
     }
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setToyData({
-            ...toyData,
-            [name]: value,
-        });
-    };
-
-    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setToyData({
-            ...toyData,
-            [name]: value,
-        });
-    };
-
-    const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setToyData({
-            ...toyData,
-            [name]: value,
-        });
-    };
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!toyId || !description || !category || !details || !brand || !price || !image) {
+        if (!toyId || !description || (!category && !customCategory) || !details || !brand || !price || !image) {
             showToast('Todos os Campos são obrigatórios', 'warning');
             return;
         }
@@ -101,7 +90,7 @@ const FormModal: React.FC<ModalProps> = (props: ModalProps) => {
         const formData = new FormData();
         formData.append('toy_id', toyId);
         formData.append('description', description);
-        formData.append('category', category);
+        formData.append('category', customCategory || category);
         formData.append('details', details);
         formData.append('brand', brand);
         formData.append('price', price.replace(",", "."));
@@ -110,24 +99,30 @@ const FormModal: React.FC<ModalProps> = (props: ModalProps) => {
         }
 
         try {
-            if (props.toyToEdit === null) {
+            if (toyToEdit === null) {
                 const response = await axios.post('http://localhost:8080/toys/api/new', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
 
                     }
                 });
-                showToast(response.data.message, 'success');
-                props.setShowModal(false);
+                showToast(response.data.logs.message, `${response.data.logs.status == 201 ? 'success' : 'error'}`);
+                addNewToy(response.data.toy);
+                formReset();
+                setTimeout(() => {
+                    setShowModal(false);
+                }, 1000);
             } else {
-                const response = await axios.put(`http://localhost:8080/toys/api/toy/${toyData.toyId}`, formData, {
+                const response = await axios.put(`http://localhost:8080/toys/api/toy/${toyId}`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
 
                     }
                 });
-                showToast(response.data.message, 'success');
-                props.setShowModal(false);
+                updateToy(response.data.toy);
+                formReset();
+                setShowModal(false);
+                showToast(response.data.logs.message, `${response.data.logs.status == 200 ? 'success' : 'error'}`);
             }
 
         } catch (error) {
@@ -149,13 +144,13 @@ const FormModal: React.FC<ModalProps> = (props: ModalProps) => {
                 isToastVisible={isToastVisible}
                 hideToast={hideToast}
             />
-            {props.showModal && (
+            {showModal && (
                 <div className="fixed z-40 inset-0 overflow-y-auto mt-10">
                     <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                         <div
                             className="fixed inset-0 transition-opacity"
                             aria-hidden="true"
-                            onClick={() => props.setShowModal(false)}
+                            onClick={() => setShowModal(false)}
                         >
                             <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
                         </div>
@@ -182,11 +177,12 @@ const FormModal: React.FC<ModalProps> = (props: ModalProps) => {
                                         <input
                                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                             id="toy_id"
-                                            type="text"
+                                            type="number"
+                                            min="1" max="4294967295"
                                             placeholder="Código"
-                                            value={toyData.toyId?.toString()}
-                                            onChange={handleChange}
-                                            readOnly={props.toyToEdit !== undefined}
+                                            value={toyId?.toString()}
+                                            onChange={(e) => setToyId(e.target.value)}
+                                            readOnly={toyToEdit !== null}
                                         />
                                     </div>
                                     <div>
@@ -198,18 +194,19 @@ const FormModal: React.FC<ModalProps> = (props: ModalProps) => {
                                             id="description"
                                             type="text"
                                             placeholder="Descrição"
-                                            value={toyData.description}
-                                            onChange={handleChange}
+                                            value={description}
+                                            onChange={(e) => setDescription(e.target.value)}
                                         />
                                     </div>
                                 </div>
+
                                 <div className="mb-4">
                                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="category">
                                         Categoria
                                     </label>
                                     <select
-                                        value={toyData.category}
-                                        onChange={handleSelectChange}
+                                        value={category}
+                                        onChange={handleCategoryChange}
                                         className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                                     >
                                         <option value="">Selecione uma categoria</option>
@@ -217,9 +214,23 @@ const FormModal: React.FC<ModalProps> = (props: ModalProps) => {
                                         <option value="Pelúcia">Pelúcia</option>
                                         <option value="Jogos de tabuleiro">Jogos de tabuleiro</option>
                                         <option value="Veículos de brinquedo">Veículos de brinquedo</option>
-                                        <option value="Jogos de tabuleiro">Jogos de tabuleiro</option>
+                                        <option value="custom">Inserir nova categoria</option>
                                     </select>
                                 </div>
+                                {showCustomCategory && (
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="customCategory">
+                                            Nova Categoria
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={customCategory}
+                                            onChange={(e) => setCustomCategory(e.target.value)}
+                                            className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                                        />
+                                    </div>
+                                )}
+
                                 <div className="mb-4">
                                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="details">
                                         Detalhes
@@ -228,8 +239,8 @@ const FormModal: React.FC<ModalProps> = (props: ModalProps) => {
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="details"
                                         placeholder="Detalhes"
-                                        value={toyData.details}
-                                        onChange={handleTextareaChange}
+                                        value={details}
+                                        onChange={(e) => setDetails(e.target.value)}
                                     />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4 mb-4">
@@ -242,8 +253,8 @@ const FormModal: React.FC<ModalProps> = (props: ModalProps) => {
                                             id="brand"
                                             type="text"
                                             placeholder="Marca"
-                                            value={toyData.brand}
-                                            onChange={handleChange}
+                                            value={brand}
+                                            onChange={(e) => setBrand(e.target.value)}
                                         />
                                     </div>
                                     <div>
@@ -254,7 +265,7 @@ const FormModal: React.FC<ModalProps> = (props: ModalProps) => {
                                             id="price"
                                             name="price"
                                             placeholder="Preço"
-                                            value={toyData.price || ''}
+                                            value={price || ''}
                                             decimalsLimit={2}
                                             onValueChange={(value) => setPrice(value || '')}
                                             prefix="R$"
@@ -262,6 +273,12 @@ const FormModal: React.FC<ModalProps> = (props: ModalProps) => {
                                         />
                                     </div>
                                 </div>
+                                {imageUrl && (
+                                    <div className="flex justify-center">
+                                        <img src={imageUrl} />
+
+                                    </div>
+                                )}
                                 <div className="mb-4">
                                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="image">
                                         Imagem
@@ -270,11 +287,7 @@ const FormModal: React.FC<ModalProps> = (props: ModalProps) => {
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="image"
                                         type="file"
-                                        onChange={(e) => {
-                                            if (e.target.files) {
-                                                setImage(e.target.files[0]);
-                                            }
-                                        }}
+                                        onChange={handleImageChange}
                                     />
                                 </div>
                                 <div className="flex items-center justify-end mt-4">
@@ -282,7 +295,7 @@ const FormModal: React.FC<ModalProps> = (props: ModalProps) => {
                                         type="submit"
                                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                                     >
-                                        {props.toyToEdit ? 'Atualizar' : 'Salvar'}
+                                        {toyToEdit ? 'Atualizar' : 'Salvar'}
                                     </button>
                                 </div>
                             </form>

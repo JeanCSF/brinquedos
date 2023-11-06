@@ -19,6 +19,7 @@ import Error401Page from "../pages/Error401Page";
 import HomePageContent from "../pages/HomePageContent";
 import ToyPage from "../pages/ToyPage";
 import CategoryPage from "../pages/category/CategoryPage";
+import ToysByCategory from "../pages/ToysByCategory";
 
 const Private = ({ children }: { children: ReactNode }) => {
     const { authenticated, loading } = useContext(AuthContext);
@@ -38,8 +39,7 @@ const Admin = ({ children }: { children: ReactNode }) => {
     if (loading) {
         return <div className="loading">Carregando...</div>;
     }
-
-    if (isAdm == '1') {
+    if (isAdm === "0") {
         return <Navigate to="/unauthorized" />;
     }
     return children;
@@ -56,6 +56,7 @@ const AppRoutes = () => {
                         <Route path="/" element={<HomePageContent />} />
                         <Route path="/toy/:id" element={<ToyPage />} />
                         <Route path="/catalog" element={<CategoryPage />} />
+                        <Route path="/category/:categoryName" element={<ToysByCategory />} />
                         <Route path="/unauthorized" element={<Error401Page />} />
                         <Route path="/admin" element={<Admin> <AdminPage /> </Admin>} />
                     </Route>

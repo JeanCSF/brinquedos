@@ -23,16 +23,28 @@ const AdminPage: React.FC = () => {
         { name: "Administração", path: "/admin" },
     ];
     const [toys, setToys] = useState<Toy[]>([]);
+    const addNewToy = (newToy: Toy) => {
+        setToys([...toys, newToy]);
+    };
+
+    const updateToy = (updatedToy: Toy) => {
+        const updatedToys = toys.map((toy) => {
+            if (toy.toyId === updatedToy.toyId) {
+                return updatedToy;
+            }
+            return toy;
+        });
+        setToys(updatedToys);
+    };
+
     const [toyToEdit, setToyToEdit] = useState<Toy | null>(null);
     const [toyToDelete, setToyToDelete] = useState<number | null>(null);
-    const [selectedToy, setSelectedAluno] = useState<Toy | null>(null);
 
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [toysPerPage] = useState(10);
 
     const [showModal, setShowModal] = useState(false);
-    
 
     const fetchToys = async () => {
         try {
@@ -61,6 +73,8 @@ const AdminPage: React.FC = () => {
                 showModal={showModal}
                 setShowModal={setShowModal}
                 toyToEdit={toyToEdit}
+                addNewToy={addNewToy}
+                updateToy={updateToy}
             />
             <div className="text-end">
                 <button
@@ -86,7 +100,6 @@ const AdminPage: React.FC = () => {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Marca</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoria</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Detalhes</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preço</th>
                         <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                             <div className="flex items-center justify-center">
@@ -104,7 +117,6 @@ const AdminPage: React.FC = () => {
                             <td className="px-6 py-4 whitespace-nowrap"><Link to={`../toy/${toy.toyId}`}>{toy.description}</Link></td>
                             <td className="px-6 py-4 whitespace-nowrap">{toy.brand}</td>
                             <td className="px-6 py-4 whitespace-nowrap">{toy.category}</td>
-                            <td className="px-6 py-4 whitespace-nowrap">{toy.details}</td>
                             <td className="px-6 py-4 whitespace-nowrap">R$ {toy.price.toFixed(2).replace(".", ",")}</td>
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center justify-center gap-4">

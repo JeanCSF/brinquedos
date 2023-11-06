@@ -6,6 +6,8 @@ import java.util.List;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 
+import com.google.gson.Gson;
+
 import br.edu.toys.dao.ToyDAO;
 import br.edu.toys.exception.MessageResponse;
 import br.edu.toys.model.Toy;
@@ -41,6 +43,7 @@ public class ToysResources {
 	
 	private ToyDAO dao = new ToyDAO();
 	private Toy toy = new Toy();
+	private Gson gson = new Gson();
 	
 	@POST
 	@Path("/new")
@@ -86,7 +89,13 @@ public class ToysResources {
 			successMessage.setStatus(Response.Status.CREATED.getStatusCode());
 			successMessage.setMessage("Brinquedo criado com sucesso!");
 			successMessage.setTimestamp(System.currentTimeMillis());
-			return Response.status(Response.Status.CREATED).entity(successMessage).type(MediaType.APPLICATION_JSON).build();
+			
+			
+			String jsonSuccessMessage = gson.toJson(successMessage);
+			String jsonToy = gson.toJson(toy); 
+			String jsonResponse = "{\"logs\":" + jsonSuccessMessage + ", \"toy\":" + jsonToy + "}";
+
+			return Response.status(Response.Status.CREATED).entity(jsonResponse).type(MediaType.APPLICATION_JSON).build();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -171,7 +180,12 @@ public class ToysResources {
 			successMessage.setStatus(Response.Status.OK.getStatusCode());
 			successMessage.setMessage("Brinquedo atualizado com sucesso!");
 			successMessage.setTimestamp(System.currentTimeMillis());
-			return Response.status(Response.Status.OK).entity(successMessage).type(MediaType.APPLICATION_JSON).build();
+			
+			String jsonSuccessMessage = gson.toJson(successMessage);
+			String jsonToy = gson.toJson(toy); 
+			String jsonResponse = "{\"logs\":" + jsonSuccessMessage + ", \"toy\":" + jsonToy + "}";
+			
+			return Response.status(Response.Status.OK).entity(jsonResponse).type(MediaType.APPLICATION_JSON).build();
 			
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erro ao atualizar o brinquedo: " + e.getMessage()).build();

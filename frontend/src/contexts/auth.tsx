@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const [authUser, setAuthUser] = useState<string | null>(null);
   const [userImg, setUserImg] = useState<string | null>(null);
-  const [isAdm, setIsAdm] = useState<string | null>(null);
+  const [isAdm, setIsAdm] = useState<string | null>("0");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -41,9 +41,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { userName: loggedUser, token, userImg, isAdm } = response.data
       localStorage.setItem("user", JSON.stringify(loggedUser));
       localStorage.setItem("userImg", JSON.stringify(userImg));
-      localStorage.setItem("isAdm", JSON.stringify(isAdm));
+      localStorage.setItem("isAdm", isAdm);
       localStorage.setItem("token", token);
-  
+
       api.defaults.headers.Authorization = `Bearer ${token}`;
       setAuthUser(loggedUser);
       setIsAdm(isAdm);
@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error("Erro no login:", error);
     }
   };
-  
+
   const logout = () => {
     console.log("logout");
     localStorage.removeItem("user");
@@ -62,8 +62,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("token");
     api.defaults.headers.Authorization = null;
     setAuthUser(null);
-    setUserImg("");
-    setIsAdm("");
+    setUserImg(null);
+    setIsAdm(null);
     navigate("/login");
   };
 
