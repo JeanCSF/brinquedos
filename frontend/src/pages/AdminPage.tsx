@@ -20,7 +20,7 @@ export interface Toy {
 const AdminPage: React.FC = () => {
     const paths = [
         { name: "Home", path: "/" },
-        { name: "Administração", path: "/admin" },
+        { name: "Administração - Brinquedos", path: "/admin" },
     ];
     const [toys, setToys] = useState<Toy[]>([]);
     const addNewToy = (newToy: Toy) => {

@@ -14,6 +14,7 @@ import { AuthProvider, AuthContext } from "../contexts/auth";
 import { ReactNode } from "react";
 
 import AdminPage from "../pages/AdminPage";
+import AdminUsersPage from "../pages/AdminUsersPage";
 import Error401Page from "../pages/Error401Page";
 
 import HomePageContent from "../pages/HomePageContent";
@@ -59,6 +60,7 @@ const AppRoutes = () => {
                         <Route path="/category/:categoryName" element={<ToysByCategory />} />
                         <Route path="/unauthorized" element={<Error401Page />} />
                         <Route path="/admin" element={<Admin> <AdminPage /> </Admin>} />
+                        <Route path="/users" element={<Admin> <AdminUsersPage /> </Admin>} />
                     </Route>
                 </Routes>
             </AuthProvider>

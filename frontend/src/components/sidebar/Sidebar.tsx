@@ -10,7 +10,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, handleToggle }) => {
   const { isAdm } = useContext(AuthContext);
-  const isAdmin = isAdm === "1"; 
+  const isAdmin = isAdm === "1";
 
   return (
     <div className={`sidebar ${isOpen ? 'translate-x-0' : '-translate-x-full'} fixed top-0 left-0 h-screen w-48 bg-tdb-gray  transition-transform duration-300 ease-in-out`}>
@@ -23,16 +23,28 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, handleToggle }) => {
             Home
           </Link>
         </li>
-        {isAdmin && (
-          <li className="p-4">
-            <Link to="/admin" title="Admin">
-              Administração
-            </Link>
-          </li>
-        )}
         <li className="p-4">
           <Link to="/catalog" title="Catálogo de Brinquedos">
-          Catálogo
+            Catálogo
+          </Link>
+        </li>
+        {isAdmin && (
+          <div>
+            <li className="p-4">
+              <Link to="/admin" title="Admin">
+                Administração/Briquedos
+              </Link>
+            </li>
+            <li className="p-4">
+              <Link to="/users" title="Users">
+                Administração/Usuários
+              </Link>
+            </li>
+          </div>
+        )}
+        <li className="p-4">
+          <Link to="/team" title="Nossa Equipe">
+            Equipe
           </Link>
         </li>
       </ul>

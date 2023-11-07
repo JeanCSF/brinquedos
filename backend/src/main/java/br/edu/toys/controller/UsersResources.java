@@ -7,6 +7,8 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.mindrot.jbcrypt.BCrypt;
 
+import com.google.gson.Gson;
+
 import br.edu.toys.exception.MessageResponse;
 import br.edu.toys.util.FormValidation;
 import br.edu.toys.util.ImageUploadService;
@@ -43,13 +45,17 @@ public class UsersResources {
 
 	private UserDAO dao = new UserDAO();
 	private User user = new User();
+	private Gson gson = new Gson();
 	private FormValidation validation = new FormValidation();
 
 	@POST 
 	@Path("/user-new") 
 	@Consumes(MediaType.MULTIPART_FORM_DATA) 
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createUser(@Multipart("user") String userName, @Multipart("password") String password, @Multipart("adm") String adm, // OS CAMPOS DO FORMULARIOS DEVEM SER IGUAIS AOS DO @Multipart
+	public Response createUser(
+	@Multipart("user") String userName, 
+	@Multipart("password") String password, 
+	@Multipart("adm") String adm, // OS CAMPOS DO FORMULARIOS DEVEM SER IGUAIS AOS DO @Multipart
 	@Multipart("user_img") Attachment userImg) {
 
 		try {
@@ -92,8 +98,12 @@ public class UsersResources {
 			successMessage.setStatus(Response.Status.CREATED.getStatusCode());
 			successMessage.setMessage("Usuário criado com sucesso!");
 			successMessage.setTimestamp(System.currentTimeMillis());
-			return Response.status(Response.Status.CREATED).entity(successMessage).type(MediaType.APPLICATION_JSON).build();
 			
+			String jsonSuccessMessage = gson.toJson(successMessage);
+			String jsonUser = gson.toJson(user); 
+			String jsonResponse = "{\"logs\":" + jsonSuccessMessage + ", \"user\":" + jsonUser + "}";
+			
+			return Response.status(Response.Status.CREATED).entity(jsonResponse).type(MediaType.APPLICATION_JSON).build();			
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -189,7 +199,12 @@ public class UsersResources {
 			successMessage.setStatus(Response.Status.OK.getStatusCode());
 			successMessage.setMessage("Usuário atualizado com sucesso!");
 			successMessage.setTimestamp(System.currentTimeMillis());
-			return Response.status(Response.Status.OK).entity(successMessage).type(MediaType.APPLICATION_JSON).build();
+			
+			String jsonSuccessMessage = gson.toJson(successMessage);
+			String jsonUser = gson.toJson(user); 
+			String jsonResponse = "{\"logs\":" + jsonSuccessMessage + ", \"user\":" + jsonUser + "}";
+			
+			return Response.status(Response.Status.OK).entity(jsonResponse).type(MediaType.APPLICATION_JSON).build();	
 			
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erro ao atualizar o usuário: " + e.getMessage()).build();

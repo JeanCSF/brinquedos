@@ -23,7 +23,20 @@ const FormModal: React.FC<ModalProps> = ({ showModal, setShowModal, toyToEdit, a
     const [description, setDescription] = useState<string | null>("");
     const [category, setCategory] = useState('');
     const [customCategory, setCustomCategory] = useState('');
+    const [categories, setCategories] = useState([]);
     const [showCustomCategory, setShowCustomCategory] = useState(false);
+    useEffect(() => {
+        const fetchCategorias = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/toys/api/categories');
+                setCategories(response.data);
+            } catch (error) {
+                console.error('Erro ao obter categorias:', error);
+            }
+        };
+
+        fetchCategorias();
+    }, []);
     const [details, setDetails] = useState<string | null>("");
     const [brand, setBrand] = useState<string | null>("");
     const [price, setPrice] = useState<string | null>("");
@@ -39,6 +52,8 @@ const FormModal: React.FC<ModalProps> = ({ showModal, setShowModal, toyToEdit, a
         setPrice("");
         setImage(null);
         setImageUrl("");
+        setShowCustomCategory(false);
+        setCustomCategory("")
     };
 
     const handleCategoryChange = (e) => {
@@ -209,11 +224,12 @@ const FormModal: React.FC<ModalProps> = ({ showModal, setShowModal, toyToEdit, a
                                         onChange={handleCategoryChange}
                                         className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                                     >
-                                        <option value="">Selecione uma categoria</option>
-                                        <option value="Educativos">Educativos</option>
-                                        <option value="Pelúcia">Pelúcia</option>
-                                        <option value="Jogos de tabuleiro">Jogos de tabuleiro</option>
-                                        <option value="Veículos de brinquedo">Veículos de brinquedo</option>
+                                        {categories && (<option value="">Selecione uma categoria</option>)}
+                                        {categories.map((cat) => (
+                                            <option key={cat} value={cat}>
+                                                {cat}
+                                            </option>
+                                        ))}
                                         <option value="custom">Inserir nova categoria</option>
                                     </select>
                                 </div>
