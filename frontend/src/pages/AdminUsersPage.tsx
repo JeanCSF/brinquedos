@@ -6,13 +6,15 @@ import { BsFillGearFill, BsFillPencilFill, BsTrash3, BsPlus } from "react-icons/
 import Pagination from "../components/pagination/Pagination";
 import BreadCrumb from "../components/breadcrumb/BreadCrumb";
 import FormUsersModal from "../components/modal/FormUsersModal";
+import DeleteModal from "../components/modal/DeleteModal";
+import Toast from "../components/notifications/Toast";
 
 export interface User {
     userId: number;
     userName: string;
     password: string;
     isAdm: string;
-    userImg: File | null;
+    userImg: string;
 }
 
 const AdminUsersPage: React.FC = () => {
@@ -43,6 +45,21 @@ const AdminUsersPage: React.FC = () => {
     const [usersPerPage] = useState(10);
 
     const [showModal, setShowModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    const [isToastVisible, setIsToastVisible] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+    const [toastType, setToastType] = useState<'success' | 'error' | 'warning'>('error');
+
+    const showToast = (message: string, type: 'success' | 'error' | 'warning') => {
+        setToastMessage(message);
+        setToastType(type);
+        setIsToastVisible(true);
+    };
+
+    const hideToast = () => {
+        setIsToastVisible(false);
+    };
 
     const fetchUsers = async () => {
         try {
@@ -64,15 +81,49 @@ const AdminUsersPage: React.FC = () => {
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+    const handleConfirmDelete = async () => {
+        try {
+            const response = await axios.delete(`http://localhost:8080/toys/api/user/${userToDelete}`);
+
+            if (response.status !== 200) {
+                const errorResponse = response.data;
+                throw new Error(`Erro na requisição: ${errorResponse.message}`);
+            }
+
+            const responseData = response.data;
+            showToast(responseData.message, `${responseData.status === 200 ? 'success' : 'error'}`);
+            setUserToDelete(null);
+            setShowDeleteModal(false);
+            setUsers((prevUsers) => prevUsers.filter((user) => user.userId !== userToDelete));
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+        }
+    };
+
+    const handleCloseModal = () => {
+        setShowDeleteModal(false);
+    };
+
     return (
         <div className="container mx-auto p-6">
             <BreadCrumb paths={paths} />
+            <Toast
+                message={toastMessage}
+                type={toastType}
+                isToastVisible={isToastVisible}
+                hideToast={hideToast}
+            />
             <FormUsersModal
                 showModal={showModal}
                 setShowModal={setShowModal}
                 userToEdit={userToEdit}
                 addNewUser={addNewUser}
                 updateUser={updateUser}
+            />
+            <DeleteModal
+                showModal={showDeleteModal}
+                onConfirm={handleConfirmDelete}
+                onCancel={handleCloseModal}
             />
             <div className="text-end">
                 <button
@@ -113,7 +164,7 @@ const AdminUsersPage: React.FC = () => {
                                 <img src={user.userImg} alt={user.userName} className="h-10 w-10 rounded-full" />
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap"><Link to={`../toy/${user.userName}`}>{user.userName}</Link></td>
-                            <td className="px-6 py-4 whitespace-nowrap">{user.isAdm === "1"? 'Sim' : 'Não'}</td>
+                            <td className="px-6 py-4 whitespace-nowrap">{user.isAdm === "1" ? 'Sim' : 'Não'}</td>
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center justify-center gap-4">
                                     <button
@@ -123,7 +174,14 @@ const AdminUsersPage: React.FC = () => {
                                             setShowModal(true);
                                         }}
                                     ><BsFillPencilFill /></button>
-                                    <button className="text-red-500"><BsTrash3 /></button>
+                                    <button
+                                        className="text-red-500"
+                                        onClick={()=>{
+                                            setUserToDelete(user.userId);
+                                            setShowDeleteModal(true);
+                                        }}>
+                                        <BsTrash3 />
+                                    </button>
                                 </div>
                             </td>
                         </tr>

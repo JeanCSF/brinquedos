@@ -1,6 +1,5 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { AuthContext } from "../contexts/auth";
 
 import Header from "../components/header/Header";
 import Sidebar from "../components/sidebar/Sidebar";
@@ -8,7 +7,6 @@ import Footer from "../components/footer/Footer";
 import { FaBars } from "react-icons/fa";
 
 const HomePage: React.FC = () => {
-    const { isAdm } = useContext(AuthContext);
     const [isOpen, setIsOpen] = useState(true);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 

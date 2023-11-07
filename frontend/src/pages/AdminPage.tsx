@@ -6,6 +6,8 @@ import { BsFillGearFill, BsFillPencilFill, BsTrash3, BsPlus } from "react-icons/
 import Pagination from "../components/pagination/Pagination";
 import BreadCrumb from "../components/breadcrumb/BreadCrumb";
 import FormModal from "../components/modal/FormModal";
+import DeleteModal from "../components/modal/DeleteModal";
+import Toast from "../components/notifications/Toast";
 
 export interface Toy {
     toyId: string;
@@ -15,7 +17,7 @@ export interface Toy {
     brand: string;
     price: number;
     image: string;
-}
+};
 
 const AdminPage: React.FC = () => {
     const paths = [
@@ -45,6 +47,21 @@ const AdminPage: React.FC = () => {
     const [toysPerPage] = useState(10);
 
     const [showModal, setShowModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    const [isToastVisible, setIsToastVisible] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+    const [toastType, setToastType] = useState<'success' | 'error' | 'warning'>('error');
+
+    const showToast = (message: string, type: 'success' | 'error' | 'warning') => {
+        setToastMessage(message);
+        setToastType(type);
+        setIsToastVisible(true);
+    };
+
+    const hideToast = () => {
+        setIsToastVisible(false);
+    };
 
     const fetchToys = async () => {
         try {
@@ -66,15 +83,49 @@ const AdminPage: React.FC = () => {
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+    const handleConfirmDelete = async () => {
+        try {
+            const response = await axios.delete(`http://localhost:8080/toys/api/toy/${toyToDelete}`);
+
+            if (response.status !== 200) {
+                const errorResponse = response.data;
+                throw new Error(`Erro na requisição: ${errorResponse.message}`);
+            }
+
+            const responseData = response.data;
+            showToast(responseData.message, `${responseData.status === 200 ? 'success' : 'error'}`);
+            setToyToDelete(null);
+            setShowDeleteModal(false);
+            setToys((prevToys) => prevToys.filter((toy) => parseInt(toy.toyId) !== toyToDelete));
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+        }
+    };
+
+    const handleCloseModal = () => {
+        setShowDeleteModal(false);
+    };
+
     return (
         <div className="container mx-auto p-6">
             <BreadCrumb paths={paths} />
+            <Toast
+                message={toastMessage}
+                type={toastType}
+                isToastVisible={isToastVisible}
+                hideToast={hideToast}
+            />
             <FormModal
                 showModal={showModal}
                 setShowModal={setShowModal}
                 toyToEdit={toyToEdit}
                 addNewToy={addNewToy}
                 updateToy={updateToy}
+            />
+            <DeleteModal
+                showModal={showDeleteModal}
+                onConfirm={handleConfirmDelete}
+                onCancel={handleCloseModal}
             />
             <div className="text-end">
                 <button
@@ -127,7 +178,14 @@ const AdminPage: React.FC = () => {
                                             setShowModal(true);
                                         }}
                                     ><BsFillPencilFill /></button>
-                                    <button className="text-red-500"><BsTrash3 /></button>
+                                    <button
+                                        className="text-red-500"
+                                        onClick={()=>{
+                                            setToyToDelete(parseInt(toy.toyId));
+                                            setShowDeleteModal(true);
+                                        }}>
+                                        <BsTrash3 />
+                                    </button>
                                 </div>
                             </td>
                         </tr>

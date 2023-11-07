@@ -4,6 +4,15 @@ import axios from 'axios';
 import CurrencyInput from "react-currency-input-field";
 import Toast from "../notifications/Toast";
 
+import { Toy } from "../../pages/AdminPage";
+
+type ModalProps = {
+    showModal: boolean;
+    setShowModal: (show: boolean) => void;
+    toyToEdit: Toy | null;
+    addNewToy: (toy: Toy) => void;
+    updateToy: (toy: Toy) => void;
+};
 const FormModal: React.FC<ModalProps> = ({ showModal, setShowModal, toyToEdit, addNewToy, updateToy }) => {
     const [isToastVisible, setIsToastVisible] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
@@ -56,7 +65,7 @@ const FormModal: React.FC<ModalProps> = ({ showModal, setShowModal, toyToEdit, a
         setCustomCategory("")
     };
 
-    const handleCategoryChange = (e) => {
+    const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedCategory = e.target.value;
         if (selectedCategory === 'custom') {
             setShowCustomCategory(true);
@@ -66,11 +75,13 @@ const FormModal: React.FC<ModalProps> = ({ showModal, setShowModal, toyToEdit, a
         }
     };
 
-    const handleImageChange = (e) => {
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             const reader = new FileReader();
             reader.onload = (event) => {
-                setImageUrl(event.target.result);
+                if (event.target) {
+                    setImageUrl(event.target.result as string);
+                }
             };
             reader.readAsDataURL(e.target.files[0]);
             setImage(e.target.files[0]);
@@ -209,7 +220,7 @@ const FormModal: React.FC<ModalProps> = ({ showModal, setShowModal, toyToEdit, a
                                             id="description"
                                             type="text"
                                             placeholder="Descrição"
-                                            value={description}
+                                            value={description?.toString()}
                                             onChange={(e) => setDescription(e.target.value)}
                                         />
                                     </div>
@@ -255,7 +266,7 @@ const FormModal: React.FC<ModalProps> = ({ showModal, setShowModal, toyToEdit, a
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="details"
                                         placeholder="Detalhes"
-                                        value={details}
+                                        value={details?.toString()}
                                         onChange={(e) => setDetails(e.target.value)}
                                     />
                                 </div>
@@ -269,7 +280,7 @@ const FormModal: React.FC<ModalProps> = ({ showModal, setShowModal, toyToEdit, a
                                             id="brand"
                                             type="text"
                                             placeholder="Marca"
-                                            value={brand}
+                                            value={brand?.toString()}
                                             onChange={(e) => setBrand(e.target.value)}
                                         />
                                     </div>

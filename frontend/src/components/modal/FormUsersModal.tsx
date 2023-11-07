@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { User } from "../../pages/AdminUsersPage";
 import axios from 'axios';
 
 import Toast from "../notifications/Toast";
 
-const FormUsersModal: React.FC<ModalProps> = ({ showModal, setShowModal, userToEdit, addNewUser, updateUser }) => {
+type UserModalProps = {
+    showModal: boolean;
+    setShowModal: (show: boolean) => void;
+    userToEdit: User | null;
+    addNewUser: (user: User) => void;
+    updateUser: (user: User) => void;
+}
+
+const FormUsersModal: React.FC<UserModalProps> = ({ showModal, setShowModal, userToEdit, addNewUser, updateUser }) => {
     const [isToastVisible, setIsToastVisible] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const [toastType, setToastType] = useState<'success' | 'error' | 'warning'>('error');
@@ -51,7 +59,7 @@ const FormUsersModal: React.FC<ModalProps> = ({ showModal, setShowModal, userToE
 
     useEffect(() => {
         if (userToEdit) {
-            setUserId(userToEdit.userId);
+            setUserId(userToEdit.userId.toString());
             setUserName(userToEdit.userName);
             setPassword(userToEdit.password);
             setIsAdm(userToEdit.isAdm);
@@ -160,7 +168,7 @@ const FormUsersModal: React.FC<ModalProps> = ({ showModal, setShowModal, userToE
                                         name="user"
                                         type="text"
                                         placeholder="Digite o usuário"
-                                        value={userName}
+                                        value={userName?.toString()}
                                         onChange={(e) => setUserName(e.target.value)}
                                     />
                                 </div>
@@ -174,7 +182,7 @@ const FormUsersModal: React.FC<ModalProps> = ({ showModal, setShowModal, userToE
                                         name="password"
                                         type="password"
                                         placeholder="**********"
-                                        value={password}
+                                        value={password?.toString()}
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
@@ -183,7 +191,7 @@ const FormUsersModal: React.FC<ModalProps> = ({ showModal, setShowModal, userToE
                                         Usuário Administrador
                                     </label>
                                     <select
-                                        value={isAdm}
+                                        value={isAdm?.toString()}
                                         onChange={(e) => setIsAdm(e.target.value)}
                                         className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                                     >
