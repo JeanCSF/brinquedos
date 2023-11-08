@@ -48,8 +48,8 @@ const CategoryPage: React.FC = () => {
             <BreadCrumb paths={paths} />
             <div className="flex flex-wrap gap-8 mt-5">
                 {categories.map((category, index) => (
-                    <Link to={`../category/${category}`}>
-                        <div key={index} className="bg-white rounded-lg shadow-md p-4" style={{ maxWidth: 250 }}>
+                    <Link key={index} to={`../category/${category}`}>
+                        <div className="bg-white rounded-lg shadow-md p-4" style={{ maxWidth: 250 }}>
                             <img src={randomImage} alt="Category" className="w-full h-64 object-cover mb-4" />
                             <h3 className="text-lg font-semibold mb-2">{category}</h3>
                         </div>

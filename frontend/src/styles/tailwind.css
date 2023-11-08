@@ -13,6 +13,18 @@
     background-color: var(--tdbGray);
 }
 
+.bg-tdb-red {
+    background-color: var(--tdbRed);
+}
+
+.bg-tdb-cyan {
+    background-color: var(--tdbCyan);
+}
+
+.bg-tdb-yellow {
+    background-color: var(--tdbYellow);
+}
+
 .text-tdb-gray {
     color: var(--tdbGray);
 }

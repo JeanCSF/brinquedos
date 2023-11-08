@@ -84,7 +84,7 @@ const TeamPage: React.FC = () => {
     return (
         <div className="container">
             <BreadCrumb paths={paths} />
-            <h1 className="text-3xl font-semibold text-center mb-6">Nossa Equipe</h1>
+            <h1 className="text-3xl font-semibold text-center mb-6">Data Table</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {teamMembers.map((member, index) => (
                     <div

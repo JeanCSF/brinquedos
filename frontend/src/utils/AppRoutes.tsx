@@ -56,13 +56,13 @@ const AppRoutes = () => {
                     <Route path="/signup" element={<SignUpPage />} />
                     <Route element={<Private> <HomePage /> </Private>}>
                         <Route path="/" element={<HomePageContent />} />
-                        <Route path="/toy/:id" element={<ToyPage />} />
-                        <Route path="/catalog" element={<CategoryPage />} />
-                        <Route path="/team" element={<TeamPage />} />
-                        <Route path="/category/:categoryName" element={<ToysByCategory />} />
-                        <Route path="/unauthorized" element={<Error401Page />} />
-                        <Route path="/admin" element={<Admin> <AdminPage /> </Admin>} />
-                        <Route path="/users" element={<Admin> <AdminUsersPage /> </Admin>} />
+                        <Route path="toy/:id" element={<ToyPage />} />
+                        <Route path="catalog" element={<CategoryPage />} />
+                        <Route path="team" element={<TeamPage />} />
+                        <Route path="category/:categoryName" element={<ToysByCategory />} />
+                        <Route path="unauthorized" element={<Error401Page />} />
+                        <Route path="admin" element={<Admin> <AdminPage /> </Admin>} />
+                        <Route path="users" element={<Admin> <AdminUsersPage /> </Admin>} />
                     </Route>
                 </Routes>
             </AuthProvider>
