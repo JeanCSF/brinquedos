@@ -29,35 +29,68 @@ const HomePageContent: React.FC = () => {
     const indexOfFirstToy = indexOfLastToy - toysPerPage;
     const currentToys = toys.slice(indexOfFirstToy, indexOfLastToy);
 
+    const [filter, setFilter] = useState("");
+    const filteredToys = toys.filter((toy) =>
+        toy.toyId.toString().includes(filter.toLowerCase()) ||
+        toy.description.toLowerCase().includes(filter.toLowerCase()) ||
+        toy.brand.toLowerCase().includes(filter.toLowerCase()) ||
+        toy.category.toLowerCase().includes(filter.toLowerCase()) ||
+        toy.price.toString().includes(filter.toLowerCase())
+    );
+
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
     return (
         <div className="container">
+                <BreadCrumb paths={paths} />
+            <div className="text-end">
+                <input
+                    className="shadow appearance-none border rounded w-96 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    type="text"
+                    placeholder="Buscar Brinquedo"
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                />
+            </div>
             <Pagination
                 currentPage={currentPage}
-                totalPages={Math.ceil(toys.length / toysPerPage)}
+                totalPages={filter ? Math.ceil(filteredToys.length / toysPerPage) : Math.ceil(toys.length / toysPerPage)}
                 onPageChange={paginate}
             />
-            <BreadCrumb paths={paths} />
 
             <div className="flex flex-wrap">
-                {currentToys.map((toy, index) => (
-                    <ToyCard
-                        key={index}
-                        brand={toy.brand}
-                        category={toy.category}
-                        description={toy.description}
-                        details={toy.details}
-                        image={toy.image}
-                        price={toy.price}
-                        toyId={toy.toyId}
-                    />
-                ))}
+                {filter ?
+                    filteredToys.map((toy, index) => (
+                        <ToyCard
+                            key={index}
+                            brand={toy.brand}
+                            category={toy.category}
+                            description={toy.description}
+                            details={toy.details}
+                            image={toy.image}
+                            price={toy.price}
+                            toyId={toy.toyId}
+                        />
+                    ))
+                    :
+                    currentToys.map((toy, index) => (
+                        <ToyCard
+                            key={index}
+                            brand={toy.brand}
+                            category={toy.category}
+                            description={toy.description}
+                            details={toy.details}
+                            image={toy.image}
+                            price={toy.price}
+                            toyId={toy.toyId}
+                        />
+                    ))
+                }
                 {loading && <p>Loading...</p>}
             </div>
             <Pagination
                 currentPage={currentPage}
-                totalPages={Math.ceil(toys.length / toysPerPage)}
+                totalPages={filter ? Math.ceil(filteredToys.length / toysPerPage) : Math.ceil(toys.length / toysPerPage)}
                 onPageChange={paginate}
             />
         </div>

@@ -43,8 +43,6 @@ const AdminPage: React.FC = () => {
     const [toyToDelete, setToyToDelete] = useState<number | null>(null);
 
     const [loading, setLoading] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [toysPerPage] = useState(10);
 
     const [showModal, setShowModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -77,6 +75,17 @@ const AdminPage: React.FC = () => {
         fetchToys();
     }, []);
 
+    const [filter, setFilter] = useState("");
+    const filteredToys = toys.filter((toy) =>
+        toy.toyId.toString().includes(filter.toLowerCase()) ||
+        toy.description.toLowerCase().includes(filter.toLowerCase()) ||
+        toy.brand.toLowerCase().includes(filter.toLowerCase()) ||
+        toy.category.toLowerCase().includes(filter.toLowerCase()) ||
+        toy.price.toString().includes(filter.toLowerCase())
+    );
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [toysPerPage] = useState(10);
     const indexOfLastToy = currentPage * toysPerPage;
     const indexOfFirstToy = indexOfLastToy - toysPerPage;
     const currentToys = toys.slice(indexOfFirstToy, indexOfLastToy);
@@ -107,7 +116,7 @@ const AdminPage: React.FC = () => {
     };
 
     return (
-        <div className="container mx-auto p-6">
+        <div className="container">
             <BreadCrumb paths={paths} />
             <Toast
                 message={toastMessage}
@@ -137,16 +146,26 @@ const AdminPage: React.FC = () => {
                     className="text-lime-700 text-3xl">
                     <BsPlus />
                 </button>
+                <div>
+                    <input
+                        className="shadow appearance-none border rounded w-96 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        type="text"
+                        placeholder="Buscar Registro"
+                        value={filter}
+                        onChange={(e) => setFilter(e.target.value)}
+                    />
+                </div>
             </div>
             {loading && <p>Loading...</p>}
             <Pagination
                 currentPage={currentPage}
-                totalPages={Math.ceil(toys.length / toysPerPage)}
+                totalPages={filter ? Math.ceil(filteredToys.length / toysPerPage) : Math.ceil(toys.length / toysPerPage)}
                 onPageChange={paginate}
             />
             <table className="min-w-full divide-y divide-gray-200 mt-1">
                 <thead className="bg-gray-50">
                     <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Imagem</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Marca</th>
@@ -160,8 +179,10 @@ const AdminPage: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                    {currentToys.map((toy, index) => (
+                    {filter? 
+                    filteredToys.map((toy, index) => (
                         <tr key={index}>
+                            <td className="px-6 py-4 whitespace-nowrap">{toy.toyId}</td>
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <img src={toy.image} alt={toy.brand} className="h-10 w-10 rounded-full" />
                             </td>
@@ -180,7 +201,39 @@ const AdminPage: React.FC = () => {
                                     ><BsFillPencilFill /></button>
                                     <button
                                         className="text-red-500"
-                                        onClick={()=>{
+                                        onClick={() => {
+                                            setToyToDelete(parseInt(toy.toyId));
+                                            setShowDeleteModal(true);
+                                        }}>
+                                        <BsTrash3 />
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    ))
+                    :
+                    currentToys.map((toy, index) => (
+                        <tr key={index}>
+                            <td className="px-6 py-4 whitespace-nowrap">{toy.toyId}</td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                <img src={toy.image} alt={toy.brand} className="h-10 w-10 rounded-full" />
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap"><Link to={`../toy/${toy.toyId}`}>{toy.description}</Link></td>
+                            <td className="px-6 py-4 whitespace-nowrap">{toy.brand}</td>
+                            <td className="px-6 py-4 whitespace-nowrap">{toy.category}</td>
+                            <td className="px-6 py-4 whitespace-nowrap">R$ {toy.price.toFixed(2).replace(".", ",")}</td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="flex items-center justify-center gap-4">
+                                    <button
+                                        className="text-blue-500"
+                                        onClick={() => {
+                                            setToyToEdit(toy);
+                                            setShowModal(true);
+                                        }}
+                                    ><BsFillPencilFill /></button>
+                                    <button
+                                        className="text-red-500"
+                                        onClick={() => {
                                             setToyToDelete(parseInt(toy.toyId));
                                             setShowDeleteModal(true);
                                         }}>
@@ -194,7 +247,7 @@ const AdminPage: React.FC = () => {
             </table>
             <Pagination
                 currentPage={currentPage}
-                totalPages={Math.ceil(toys.length / toysPerPage)}
+                totalPages={filter ? Math.ceil(filteredToys.length / toysPerPage) : Math.ceil(toys.length / toysPerPage)}
                 onPageChange={paginate}
             />
         </div>

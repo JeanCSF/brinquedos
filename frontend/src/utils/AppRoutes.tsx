@@ -21,6 +21,7 @@ import HomePageContent from "../pages/HomePageContent";
 import ToyPage from "../pages/ToyPage";
 import CategoryPage from "../pages/category/CategoryPage";
 import ToysByCategory from "../pages/ToysByCategory";
+import TeamPage from "../pages/team/TeamPage";
 
 const Private = ({ children }: { children: ReactNode }) => {
     const { authenticated, loading } = useContext(AuthContext);
@@ -57,6 +58,7 @@ const AppRoutes = () => {
                         <Route path="/" element={<HomePageContent />} />
                         <Route path="/toy/:id" element={<ToyPage />} />
                         <Route path="/catalog" element={<CategoryPage />} />
+                        <Route path="/team" element={<TeamPage />} />
                         <Route path="/category/:categoryName" element={<ToysByCategory />} />
                         <Route path="/unauthorized" element={<Error401Page />} />
                         <Route path="/admin" element={<Admin> <AdminPage /> </Admin>} />

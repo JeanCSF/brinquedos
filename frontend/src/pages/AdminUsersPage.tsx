@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
 
 import { BsFillGearFill, BsFillPencilFill, BsTrash3, BsPlus } from "react-icons/bs";
@@ -75,6 +74,13 @@ const AdminUsersPage: React.FC = () => {
         fetchUsers();
     }, []);
 
+
+    const [filter, setFilter] = useState("");
+    const filteredUsers = users.filter((user) =>
+        user.userId.toString().includes(filter.toLowerCase()) ||
+        user.userName.toLowerCase().includes(filter.toLowerCase())
+    );
+
     const indexOfLastUser = currentPage * usersPerPage;
     const indexOfFirstUser = indexOfLastUser - usersPerPage;
     const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
@@ -105,7 +111,7 @@ const AdminUsersPage: React.FC = () => {
     };
 
     return (
-        <div className="container mx-auto p-6">
+        <div className="container">
             <BreadCrumb paths={paths} />
             <Toast
                 message={toastMessage}
@@ -135,6 +141,15 @@ const AdminUsersPage: React.FC = () => {
                     className="text-lime-700 text-3xl">
                     <BsPlus />
                 </button>
+                <div>
+                    <input
+                        className="shadow appearance-none border rounded w-96 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        type="text"
+                        placeholder="Buscar Registro"
+                        value={filter}
+                        onChange={(e) => setFilter(e.target.value)}
+                    />
+                </div>
             </div>
             {loading && <p>Loading...</p>}
             <Pagination
@@ -157,35 +172,66 @@ const AdminUsersPage: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                    {currentUsers.map((user, index) => (
-                        <tr key={index}>
-                            <td className="px-6 py-4 whitespace-nowrap">{user.userId}</td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                                <img src={user.userImg} alt={user.userName} className="h-10 w-10 rounded-full" />
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap"><Link to={`../toy/${user.userName}`}>{user.userName}</Link></td>
-                            <td className="px-6 py-4 whitespace-nowrap">{user.isAdm === "1" ? 'Sim' : 'Não'}</td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex items-center justify-center gap-4">
-                                    <button
-                                        className="text-blue-500"
-                                        onClick={() => {
-                                            setUserToEdit(user);
-                                            setShowModal(true);
-                                        }}
-                                    ><BsFillPencilFill /></button>
-                                    <button
-                                        className="text-red-500"
-                                        onClick={()=>{
-                                            setUserToDelete(user.userId);
-                                            setShowDeleteModal(true);
-                                        }}>
-                                        <BsTrash3 />
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
+                    {filter ?
+                        filteredUsers.map((user, index) => (
+                            <tr key={index}>
+                                <td className="px-6 py-4 whitespace-nowrap">{user.userId}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <img src={user.userImg} alt={user.userName} className="h-10 w-10 rounded-full" />
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">{user.userName}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">{user.isAdm === "1" ? 'Sim' : 'Não'}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="flex items-center justify-center gap-4">
+                                        <button
+                                            className="text-blue-500"
+                                            onClick={() => {
+                                                setUserToEdit(user);
+                                                setShowModal(true);
+                                            }}
+                                        ><BsFillPencilFill /></button>
+                                        <button
+                                            className="text-red-500"
+                                            onClick={() => {
+                                                setUserToDelete(user.userId);
+                                                setShowDeleteModal(true);
+                                            }}>
+                                            <BsTrash3 />
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))
+                        :
+                        currentUsers.map((user, index) => (
+                            <tr key={index}>
+                                <td className="px-6 py-4 whitespace-nowrap">{user.userId}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <img src={user.userImg} alt={user.userName} className="h-10 w-10 rounded-full" />
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">{user.userName}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">{user.isAdm === "1" ? 'Sim' : 'Não'}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="flex items-center justify-center gap-4">
+                                        <button
+                                            className="text-blue-500"
+                                            onClick={() => {
+                                                setUserToEdit(user);
+                                                setShowModal(true);
+                                            }}
+                                        ><BsFillPencilFill /></button>
+                                        <button
+                                            className="text-red-500"
+                                            onClick={() => {
+                                                setUserToDelete(user.userId);
+                                                setShowDeleteModal(true);
+                                            }}>
+                                            <BsTrash3 />
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
                 </tbody>
             </table>
             <Pagination
