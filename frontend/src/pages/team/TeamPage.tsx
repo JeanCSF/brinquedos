@@ -4,6 +4,7 @@ import IMgJeanC from "./JeanC.jfif";
 import IMGLucasS from "./LucasS.jpg";
 import IMGLucasP from "./LucasP.jpg";
 import IMGLuan from "./Luan.jpg";
+import IMGMatheus from "./Matheus.jpg";
 
 interface TeamMember {
     name: string;
@@ -33,6 +34,11 @@ const teamMembers: TeamMember[] = [
         image: IMGLuan,
     },
     {
+        name: "Matheus Jorge Laurente",
+        rgm: "☆2022 - ✞2023",
+        image: IMGMatheus,
+    },
+    {
         name: "Guilherme Cardoso Santos",
         rgm: "29891108",
         image: "https://via.placeholder.com/150",
@@ -45,11 +51,6 @@ const teamMembers: TeamMember[] = [
     {
         name: "Juan Ramon Pavez Silva",
         rgm: "29964555",
-        image: "https://via.placeholder.com/150",
-    },
-    {
-        name: "Matheus Jorge Laurente",
-        rgm: "☆2022 - ✞2023",
         image: "https://via.placeholder.com/150",
     },
 ];
