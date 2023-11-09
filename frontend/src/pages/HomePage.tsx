@@ -29,8 +29,8 @@ const HomePage: React.FC = () => {
                 <Header />
             </header>
             <div className="flex-1 flex overflow-hidden">
-                <div className={`flex w-1/5 bg-tdb-gray ${isOpen ? 'block translate-x-0 transition-transform duration-500 ease-in-out' : 'hidden -translate-x-full transition-transform duration-500 ease-in-out'}`}>
-                    <Sidebar isOpen={isOpen} handleToggle={handleToggle} />
+                <div className={`flex w-1/5 bg-tdb-gray ${isOpen ? 'block' : 'hidden'}`}>
+                    <Sidebar isOpen={isOpen} />
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-6 lg:ml-0">

@@ -7,13 +7,13 @@ interface SidebarProps {
   isOpen: boolean;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isOpen}) => {
+const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   const { isAdm } = useContext(AuthContext);
   const isAdmin = isAdm === "1";
   const location = useLocation();
 
   return (
-    <div className={`fixed top-0 left-0 h-screen w-full bg-tdb-gray`}>
+    <div className={`fixed top-0 left-0 h-screen w-full bg-tdb-gray ${isOpen ? 'translate-x-0 transition-transform duration-500 ease-in-out' : '-translate-x-full transition-transform duration-500 ease-in-out'}`}>
       <ul className="z-50">
         <Link to="/" title="Home">
           <li className={`p-4 font-semibold shadow-sm text-gray-500 ${location.pathname === "/" ? 'bg-tdb-cyan text-tdb-gray' : 'hover:text-gray-400'}`}>
