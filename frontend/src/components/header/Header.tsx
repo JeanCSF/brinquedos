@@ -44,15 +44,15 @@ const Header: React.FC = () => {
                 {isAdmin && (
                   <>
                     <li>
-                      <Link className="flex gap-2 items-center font-semibold mb-3 hover:bg-cyan-300 p-4" to="/admin"><TbHorseToy />Brinquedos</Link>
+                      <Link className="flex gap-2 items-center font-semibold mb-3 hover:bg-tdb-cyan p-4" to="/admin"><TbHorseToy />Brinquedos</Link>
                     </li>
                     <li>
-                      <Link className="flex gap-2 items-center font-semibold mb-3 hover:bg-cyan-300 p-4" to="/users"><TbUsers />Usuários</Link>
+                      <Link className="flex gap-2 items-center font-semibold mb-3 hover:bg-tdb-cyan p-4" to="/users"><TbUsers />Usuários</Link>
                     </li>
                   </>
                 )}
                 <li>
-                  <button className="w-full flex gap-2 items-center font-semibold mb-3 hover:bg-cyan-300 p-4" onClick={handleLogout}><TbLogout2 />Logout</button>
+                  <button className="w-full flex gap-2 items-center font-semibold mb-3 hover:bg-tdb-cyan p-4" onClick={handleLogout}><TbLogout2 />Logout</button>
                 </li>
               </ul>
             </Dropdown>

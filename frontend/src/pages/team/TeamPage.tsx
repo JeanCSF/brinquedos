@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import BreadCrumb from "../../components/breadcrumb/BreadCrumb";
-import IMgJeanC from "./JeanC.jfif";
+import IMGJeanC from "./JeanC.jfif";
 import IMGLucasS from "./LucasS.jpg";
 import IMGLucasP from "./LucasP.jpg";
 import IMGLuan from "./Luan.jpg";
 import IMGMatheus from "./Matheus.jpg";
+import IMGGuilhemre from "./Guilherme.jpg";
+import IMGJuan from "./Juan.jpg";
 
 interface TeamMember {
     name: string;
@@ -16,7 +18,7 @@ const teamMembers: TeamMember[] = [
     {
         name: "Jean Carlos de Santana Ferreira",
         rgm: "29499798",
-        image: IMgJeanC
+        image: IMGJeanC
     },
     {
         name: "Lucas Santana Feitosa",
@@ -41,16 +43,16 @@ const teamMembers: TeamMember[] = [
     {
         name: "Guilherme Cardoso Santos",
         rgm: "29891108",
-        image: "https://via.placeholder.com/150",
-    },
-    {
-        name: "Jean Alves da Silva",
-        rgm: "29547962",
-        image: "https://via.placeholder.com/150",
+        image: IMGGuilhemre,
     },
     {
         name: "Juan Ramon Pavez Silva",
         rgm: "29964555",
+        image: IMGJuan,
+    },
+    {
+        name: "Jean Alves da Silva",
+        rgm: "29547962",
         image: "https://via.placeholder.com/150",
     },
 ];

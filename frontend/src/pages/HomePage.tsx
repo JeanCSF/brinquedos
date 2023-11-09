@@ -17,9 +17,9 @@ const HomePage: React.FC = () => {
 
     useEffect(() => {
         const handleResize = () => {
-            setIsMobile(window.innerWidth < 768); 
+            setIsMobile(window.innerWidth < 768);
         };
-        window.addEventListener('resize', handleResize); 
+        window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
@@ -29,14 +29,13 @@ const HomePage: React.FC = () => {
                 <Header />
             </header>
             <div className="flex-1 flex overflow-hidden">
-                {isOpen && (
-                    <div className="flex w-1/5 bg-tdb-gray">
-                        <Sidebar isOpen={isOpen} handleToggle={handleToggle} />
-                    </div>
-                )}
+                <div className={`flex w-1/5 bg-tdb-gray ${isOpen ? 'block translate-x-0 transition-transform duration-500 ease-in-out' : 'hidden -translate-x-full transition-transform duration-500 ease-in-out'}`}>
+                    <Sidebar isOpen={isOpen} handleToggle={handleToggle} />
+                </div>
+
                 <div className="flex-1 overflow-y-auto p-6 lg:ml-0">
-                    <div className={`fixed ${isOpen && isMobile ? 'ml-20' : ''}`} onClick={handleToggle}>
-                        <FaBars />
+                    <div className={`fixed ${isOpen && isMobile ? 'ml-20' : ''}`}>
+                        <FaBars onClick={handleToggle} style={{ cursor: "pointer" }} />
                     </div>
                     <Outlet />
                 </div>

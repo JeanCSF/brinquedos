@@ -34,9 +34,9 @@ const ToyPage: React.FC = () => {
     return (
         <div className="container">
             <BreadCrumb paths={paths} />
-            <div className="flex flex-wrap items-center justify-start gap-12 my-12">
+            <div className="flex flex-wrap items-center justify-start gap-x-14 my-12">
                 <div className="max-w-md">
-                    <img src={toy.image} alt={toy.name} className="mx-auto" style={{ maxWidth: '100%' }} />
+                    <img src={toy.image} alt={toy.name} className="mx-auto" style={{ maxWidth: '500px' }} />
                 </div>
                 <div className="max-w-md">
                     <p className="text-gray-500 mb-2">Código: {toy.toyId}</p>

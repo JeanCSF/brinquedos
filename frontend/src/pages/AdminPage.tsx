@@ -136,25 +136,23 @@ const AdminPage: React.FC = () => {
                 onConfirm={handleConfirmDelete}
                 onCancel={handleCloseModal}
             />
-            <div className="text-end">
+            <div className="flex justify-between mt-3">
+                <input
+                    className="shadow appearance-none border rounded w-96 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    type="text"
+                    placeholder="Buscar Registro"
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                />
                 <button
                     onClick={() => {
                         setShowModal(true);
                         setToyToEdit(null);
                     }}
                     title="Adicionar Brinquedo"
-                    className="text-lime-700 text-3xl">
-                    <BsPlus />
+                    className="text-lime-700 flex items-center bg-tdb-gray hover:bg-lime-500 hover:text-zinc-50 p-2 rounded-lg shadow-lg text-3xl">
+                    <BsPlus /><span className="text-xl font-semibold">Adicionar Brinquedo</span>
                 </button>
-                <div>
-                    <input
-                        className="shadow appearance-none border rounded w-96 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        type="text"
-                        placeholder="Buscar Registro"
-                        value={filter}
-                        onChange={(e) => setFilter(e.target.value)}
-                    />
-                </div>
             </div>
             {loading && <p>Loading...</p>}
             <Pagination
