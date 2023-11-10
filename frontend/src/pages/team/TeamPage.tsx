@@ -7,6 +7,7 @@ import IMGLuan from "./Luan.jpg";
 import IMGMatheus from "./Matheus.jpg";
 import IMGGuilhemre from "./Guilherme.jpg";
 import IMGJuan from "./Juan.jpg";
+import IMGJeanA from "./JeanA.jpg";
 
 interface TeamMember {
     name: string;
@@ -53,7 +54,7 @@ const teamMembers: TeamMember[] = [
     {
         name: "Jean Alves da Silva",
         rgm: "29547962",
-        image: "https://via.placeholder.com/150",
+        image: IMGJeanA,
     },
 ];
 
