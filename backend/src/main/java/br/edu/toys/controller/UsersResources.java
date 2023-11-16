@@ -207,7 +207,12 @@ public class UsersResources {
 			return Response.status(Response.Status.OK).entity(jsonResponse).type(MediaType.APPLICATION_JSON).build();	
 			
 		} catch (Exception e) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erro ao atualizar o usuário: " + e.getMessage()).build();
+			e.printStackTrace();
+			MessageResponse errorResponse = new MessageResponse();
+			errorResponse.setStatus(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+			errorResponse.setMessage("Erro ao atualizar o usuário: " + e.getMessage());
+			errorResponse.setTimestamp(System.currentTimeMillis());
+			throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorResponse).type(MediaType.APPLICATION_JSON).build());
 		}
 	}
 

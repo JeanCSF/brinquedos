@@ -101,7 +101,7 @@ const FormUsersModal: React.FC<UserModalProps> = ({ showModal, setShowModal, use
                 formReset();
                 setTimeout(() => {
                     setShowModal(false);
-                }, 1000);
+                }, 500);
             } else {
                 const response = await axios.put(`http://localhost:8080/toys/api/user/${userId}`, formData, {
                     headers: {
@@ -111,8 +111,10 @@ const FormUsersModal: React.FC<UserModalProps> = ({ showModal, setShowModal, use
                 });
                 updateUser(response.data.user);
                 formReset();
-                setShowModal(false);
                 showToast(response.data.logs.message, `${response.data.logs.status == 200 ? 'success' : 'error'}`);
+                setTimeout(() => {
+                    setShowModal(false);
+                }, 500);
             }
 
         } catch (error) {

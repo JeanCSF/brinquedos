@@ -55,10 +55,10 @@ const SignUpPage: React.FC = () => {
 
                 }
             });
-            showToast(response.data.message, 'success');
+            showToast(response.data.logs.message, `${response.data.logs.status == 201 ? 'success' : 'error'}`);
             setTimeout(() => {
                 navigate("/login");
-            }, 1500);
+            }, 500);
 
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -129,7 +129,7 @@ const SignUpPage: React.FC = () => {
                             className="bg-gray-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                             type="button"
                         >
-                            <Link to="javascript:history.go(-1)">Voltar</Link>
+                            <Link to="/login">Voltar</Link>
                         </button>
                         <button
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"

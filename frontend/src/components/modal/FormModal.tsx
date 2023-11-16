@@ -137,7 +137,7 @@ const FormModal: React.FC<ModalProps> = ({ showModal, setShowModal, toyToEdit, a
                 formReset();
                 setTimeout(() => {
                     setShowModal(false);
-                }, 1000);
+                }, 500);
             } else {
                 const response = await axios.put(`http://localhost:8080/toys/api/toy/${toyId}`, formData, {
                     headers: {
@@ -147,8 +147,10 @@ const FormModal: React.FC<ModalProps> = ({ showModal, setShowModal, toyToEdit, a
                 });
                 updateToy(response.data.toy);
                 formReset();
-                setShowModal(false);
                 showToast(response.data.logs.message, `${response.data.logs.status == 200 ? 'success' : 'error'}`);
+                setTimeout(() => {
+                    setShowModal(false);
+                }, 500);
             }
 
         } catch (error) {
